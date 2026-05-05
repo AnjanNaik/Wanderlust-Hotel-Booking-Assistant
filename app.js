@@ -1,7 +1,6 @@
 if(process.env.NODE_ENV != "production"){
     require("dotenv").config();
 }
-console.log(process.env.SECRET);
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -29,6 +28,9 @@ const aiRouter = require("./routes/ai");
 
 
 const dbUrl=process.env.ATLASDB_URL;
+if (!dbUrl) {
+    throw new Error("ATLASDB_URL is missing. Add your MongoDB Atlas connection string to .env.");
+}
 
 main()
 .then(() => console.log("DB connected"))
