@@ -1,0 +1,102 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="auth-bg" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); padding: 5rem 0;">
+    <div class="auth-overlay"></div>
+    <div class="glass-card fade-up" style="max-width: 800px;">
+        <div class="text-center mb-5">
+            <div class="auth-brand-logo mb-3" style="font-size: 2.5rem; color: var(--luxury-pink);">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <h2 class="display-5 fw-bold text-white">Edit Your Suite</h2>
+            <p class="text-white-50">Refine your property details to maintain luxury standards.</p>
+        </div>
+
+        <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+
+            <div class="row g-4">
+                <div class="col-12">
+                    <label for="title" class="form-label fw-bold small text-uppercase text-white">Property Title</label>
+                    <input name="listing[title]" id="title" type="text" class="form-control luxury-input shadow-none" value="<%= listing.title %>" required>
+                </div>
+
+                <div class="col-12">
+                    <label for="description" class="form-label fw-bold small text-uppercase text-white">Description</label>
+                    <textarea name="listing[description]" id="description" class="form-control luxury-input shadow-none" rows="4" required><%= listing.description %></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small text-uppercase text-white">Current Experience</label>
+                    <div class="rounded-4 overflow-hidden shadow-sm border border-white border-opacity-10">
+                        <img src="<%= originalImageUrl %>" class="img-fluid" style="width: 100%; height: 180px; object-fit: cover; opacity: 0.9;">
+                    </div>
+                </div>
+
+                <div class="col-md-6 d-flex flex-column justify-content-end">
+                    <label class="form-label fw-bold small text-uppercase text-white">Update Image</label>
+                    <div class="luxury-file-container">
+                        <input name="listing[image]" id="image" type="file" class="luxury-file-input">
+                        <div class="luxury-file-label" style="padding: 15px 20px;">
+                            <div class="file-label-content">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span class="small">New Image</span>
+                            </div>
+                            <span class="file-name-display small" id="file-name">Optional</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="price" class="form-label fw-bold small text-uppercase text-white">Price per Night (₹)</label>
+                    <input name="listing[price]" id="price" type="number" class="form-control luxury-input shadow-none" value="<%= listing.price %>" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="category" class="form-label fw-bold small text-uppercase text-white">Vibe/Category</label>
+                    <select name="listing[category]" id="category" class="form-select luxury-input shadow-none text-white" required style="padding: 0.9rem 1.4rem;">
+                        <% ["Trending", "Rooms", "Iconic cities", "Mountains", "Castles", "Amazing pools", "Camping", "Farms", "Arctic", "Domes", "Boats", "Luxe", "Design", "Amazing views", "Lakefront", "National parks"].forEach(category => { %>
+                            <option value="<%= category %>" <%= listing.category === category ? 'selected' : '' %> class="bg-dark text-white"><%= category %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="location" class="form-label fw-bold small text-uppercase text-white">Location</label>
+                    <input name="listing[location]" id="location" type="text" class="form-control luxury-input shadow-none" value="<%= listing.location %>" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="country" class="form-label fw-bold small text-uppercase text-white">Country</label>
+                    <input name="listing[country]" id="country" type="text" class="form-control luxury-input shadow-none" value="<%= listing.country %>" required>
+                </div>
+
+                <div class="col-12 mt-4">
+                    <label class="form-label fw-bold small text-uppercase text-white mb-3">Amenities</label>
+                    <div class="row g-2">
+                        <% ["Wifi", "Parking", "Kitchen", "AC", "Pool", "TV", "Washer", "Gym"].forEach(amenity => { %>
+                            <div class="col-6 col-md-3">
+                                <div class="form-check custom-amenity-check">
+                                    <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="<%= amenity %>" id="amenity-<%= amenity %>" <%= listing.amenities && listing.amenities.includes(amenity) ? 'checked' : '' %>>
+                                    <label class="form-check-label text-white small" for="amenity-<%= amenity %>">
+                                        <%= amenity %>
+                                    </label>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-luxury-pill w-100 py-3 mt-5 fw-bold fs-5 shadow-lg">SAVE CHANGES</button>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('image').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('file-name').textContent = fileName;
+        document.getElementById('file-name').style.color = '#fff';
+    });
+</script>
+

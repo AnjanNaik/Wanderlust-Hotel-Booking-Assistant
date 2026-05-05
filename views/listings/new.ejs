@@ -1,0 +1,172 @@
+<% layout("/layouts/boilerplate")%>
+
+<div class="auth-bg" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); padding: 5rem 0;">
+    <div class="auth-overlay"></div>
+    <div class="glass-card fade-up" style="max-width: 800px;">
+        <div class="text-center mb-5">
+            <div class="auth-brand-logo mb-3" style="font-size: 2.5rem; color: var(--luxury-pink);">
+                <i class="fa-solid fa-hotel"></i>
+            </div>
+            <h2 class="display-5">Host Your Home</h2>
+            <p>Share your space with travelers from around the world</p>
+        </div>
+
+        <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+            
+            <div class="row g-4">
+                <!-- Property Title -->
+                <div class="col-12">
+                    <label for="title" class="form-label fw-bold small text-uppercase opacity-75">Property Title</label>
+                    <div class="position-relative">
+                        <i class="fa-solid fa-heading position-absolute" style="top: 15px; left: 15px; color: rgba(255,255,255,0.5);"></i>
+                        <input name="listing[title]" id="title" placeholder="e.g. Serene Mountain Retreat" type="text" class="form-control luxury-input shadow-none ps-5" required>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label for="description" class="form-label fw-bold small text-uppercase text-white m-0">Description</label>
+                        <button type="button" id="ai-generate-btn" class="btn btn-sm text-white" style="background: linear-gradient(135deg, #6366f1, #a855f7); border: none; border-radius: 20px; font-size: 0.7rem; font-weight: 700; padding: 5px 12px;">
+                            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> IMPROVE WITH AI
+                        </button>
+                    </div>
+                    <textarea name="listing[description]" id="description" placeholder="Describe the ambiance, view, and unique features..." class="form-control luxury-input shadow-none" rows="4" style="padding-top: 1rem;" required></textarea>
+                </div>
+
+                <!-- Image Upload (Custom Luxury Style) -->
+                <div class="col-12">
+                    <label class="form-label fw-bold small text-uppercase text-white">Cover Image</label>
+                    <div class="luxury-file-container">
+                        <input name="listing[image]" id="image" type="file" class="luxury-file-input" required>
+                        <div class="luxury-file-label">
+                            <div class="file-label-content">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>Upload Boutique Image</span>
+                            </div>
+                            <span class="file-name-display" id="file-name">No file selected</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price and Category -->
+                <div class="col-md-6">
+                    <label for="price" class="form-label fw-bold small text-uppercase text-white">Price per Night (₹)</label>
+                    <div class="position-relative">
+                        <i class="fa-solid fa-indian-rupee-sign position-absolute" style="top: 18px; left: 15px; color: var(--luxury-pink);"></i>
+                        <input name="listing[price]" id="price" placeholder="2500" type="number" class="form-control luxury-input shadow-none ps-5" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="category" class="form-label fw-bold small text-uppercase text-white">Vibe / Category</label>
+                    <select name="listing[category]" id="category" class="form-select luxury-input shadow-none" required style="padding: 0.9rem 1.4rem;">
+                        <option value="" disabled selected>Select a vibe</option>
+                        <option value="Trending">Trending</option>
+                        <option value="Rooms">Rooms</option>
+                        <option value="Iconic cities">Iconic cities</option>
+                        <option value="Mountains">Mountains</option>
+                        <option value="Castles">Castles</option>
+                        <option value="Amazing pools">Amazing pools</option>
+                        <option value="Camping">Camping</option>
+                        <option value="Farms">Farms</option>
+                        <option value="Arctic">Arctic</option>
+                        <option value="Domes">Domes</option>
+                        <option value="Boats">Boats</option>
+                        <option value="Luxe">Luxe</option>
+                        <option value="Design">Design</option>
+                    </select>
+                </div>
+
+                <!-- Location and Country -->
+                <div class="col-md-6">
+                    <label for="location" class="form-label fw-bold small text-uppercase text-white">Location</label>
+                    <div class="position-relative">
+                        <i class="fa-solid fa-location-dot position-absolute" style="top: 18px; left: 15px; color: var(--luxury-pink);"></i>
+                        <input name="listing[location]" id="location" placeholder="Udaipur, Rajasthan" type="text" class="form-control luxury-input shadow-none ps-5" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="country" class="form-label fw-bold small text-uppercase text-white">Country</label>
+                    <div class="position-relative">
+                        <i class="fa-solid fa-earth-asia position-absolute" style="top: 18px; left: 15px; color: var(--luxury-pink);"></i>
+                        <input name="listing[country]" id="country" placeholder="India" type="text" class="form-control luxury-input shadow-none ps-5" required>
+                    </div>
+                </div>
+
+                <!-- Amenities -->
+                <div class="col-12 mt-4">
+                    <label class="form-label fw-bold small text-uppercase text-white mb-3">Core Amenities</label>
+                    <div class="row g-3">
+                        <% ["Wifi", "Parking", "Kitchen", "AC", "Pool", "TV", "Washer", "Gym"].forEach(amenity => { %>
+                            <div class="col-6 col-md-3">
+                                <div class="form-check custom-amenity-check">
+                                    <input class="form-check-input border-white" type="checkbox" name="listing[amenities][]" value="<%= amenity %>" id="amenity-<%= amenity %>">
+                                    <label class="form-check-label text-white" for="amenity-<%= amenity %>">
+                                        <%= amenity %>
+                                    </label>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-luxury-pill w-100 py-3 mt-5 fw-bold fs-5 shadow-lg">CREATE LISTING</button>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('image').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('file-name').textContent = fileName;
+        document.getElementById('file-name').style.color = '#fff';
+    });
+
+    const aiBtn = document.getElementById('ai-generate-btn');
+    if (aiBtn) {
+        aiBtn.addEventListener('click', async () => {
+            const location = document.getElementById('location').value;
+            const category = document.getElementById('category').value;
+            const titleInput = document.getElementById('title');
+            const descInput = document.getElementById('description');
+
+            if (!location) {
+                alert("Please enter a location first so AI can generate context!");
+                return;
+            }
+
+            aiBtn.disabled = true;
+            aiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> GENERATING...';
+
+            try {
+                const response = await fetch('/host/ai/generate-listing', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ location, category })
+                });
+                
+                const data = await response.json();
+                if (data.title) {
+                    titleInput.value = data.title;
+                    descInput.value = data.description;
+                    // Trigger fade effect for "magic" feeling
+                    titleInput.style.backgroundColor = 'rgba(99, 102, 241, 0.2)';
+                    descInput.style.backgroundColor = 'rgba(99, 102, 241, 0.2)';
+                    setTimeout(() => {
+                        titleInput.style.backgroundColor = '';
+                        descInput.style.backgroundColor = '';
+                    }, 1000);
+                }
+            } catch (err) {
+                console.error("AI Generation failed", err);
+            } finally {
+                aiBtn.disabled = false;
+                aiBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles me-1"></i> IMPROVE WITH AI';
+            }
+        });
+    }
+</script>

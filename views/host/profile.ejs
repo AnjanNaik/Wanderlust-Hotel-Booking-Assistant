@@ -1,0 +1,152 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container py-5 mt-3">
+    <div class="row">
+        <%- include("../includes/host-sidebar.ejs") %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                <h1 class="h2">Profile Settings</h1>
+            </div>
+
+            <!-- Profile Settings Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <div class="card-body">
+                            <form action="/host/profile?_method=PATCH" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                                <div class="row g-4">
+                                    <div class="col-12 text-center mb-4">
+                                        <label for="avatarUpload" class="cursor-pointer d-inline-block position-relative">
+                                            <% if (user.avatar && user.avatar.url) { %>
+                                                <img id="avatarPreview" src="<%= user.avatar.url %>" alt="Profile avatar" class="rounded-circle shadow-lg object-fit-cover border border-4 border-white" style="width: 140px; height: 140px;">
+                                            <% } else { %>
+                                                <div id="avatarInitials" class="user-profile-avatar bg-danger text-white rounded-circle mx-auto d-flex align-items-center justify-content-center shadow-lg border border-4 border-white" style="width: 140px; height: 140px; font-size: 3.5rem; font-weight: 700;">
+                                                    <%= user.username.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <img id="avatarPreview" src="" alt="Profile avatar" class="rounded-circle shadow-lg object-fit-cover border border-4 border-white d-none" style="width: 140px; height: 140px;">
+                                            <% } %>
+                                            <div class="btn btn-sm btn-dark position-absolute bottom-0 end-0 rounded-circle border border-2 border-white shadow-sm d-flex align-items-center justify-content-center hover-scale" style="width: 38px; height: 38px; cursor: pointer;">
+                                                <i class="fa-solid fa-camera fs-6"></i>
+                                            </div>
+                                        </label>
+                                        <input type="file" name="avatar" id="avatarUpload" accept="image/*" class="d-none">
+                                        <p class="mt-3 mb-0 fw-bold badge bg-danger-subtle text-danger rounded-pill border py-2 px-4 shadow-sm">@<%= user.username %></p>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control rounded-4 bg-light border-0" id="nameInput" name="name" placeholder="Full Name" value="<%= user.name || '' %>" required>
+                                            <label for="nameInput"><i class="fa-solid fa-user me-2 text-danger"></i> Full Name</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control rounded-4 bg-light border-0" id="emailInput" name="email" placeholder="Email Address" value="<%= user.email %>" required>
+                                            <label for="emailInput"><i class="fa-solid fa-envelope me-2 text-danger"></i> Email Address</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control rounded-4 bg-light border-0" id="bioInput" name="bio" placeholder="Short Bio" style="height: 100px"><%= user.bio || '' %></textarea>
+                                            <label for="bioInput"><i class="fa-solid fa-align-left me-2 text-danger"></i> Short Bio</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <hr class="my-4 border-light">
+                                        <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded-4">
+                                            <div>
+                                                <h6 class="mb-0 fw-bold"><i class="fa-solid fa-shield-halved text-danger me-2"></i>Login Security</h6>
+                                                <p class="text-muted extra-small mb-0 mt-1">Update your account login and password details.</p>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-dark btn-rounded px-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mt-2 text-end">
+                                        <button type="submit" class="btn btn-danger btn-rounded px-5 py-3 fw-bold shadow-sm transition hover-shadow-lg rounded-pill" style="min-width: 200px;">Save Changes</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password Modal -->
+                <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                            <div class="modal-header border-0 pb-0 px-4 pt-4">
+                                <h5 class="modal-title fw-bold" id="changePasswordModalLabel">Change Password</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="/host/profile/password" method="POST">
+                                <div class="modal-body p-4">
+                                    <div class="form-floating mb-3">
+                                        <input type="password" class="form-control rounded-3" id="oldPassword" name="oldPassword" placeholder="Current Password" required>
+                                        <label for="oldPassword">Current Password</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="password" class="form-control rounded-3" id="newPassword" name="newPassword" placeholder="New Password" required minlength="6">
+                                        <label for="newPassword">New Password</label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0 p-4 pt-0">
+                                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-danger rounded-pill px-4">Update Password</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 d-none d-lg-block">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-light text-dark text-center">
+                        <div class="card-body">
+                            <i class="fa-solid fa-shield-halved fs-1 text-danger mb-3"></i>
+                            <h5 class="fw-bold">Security Tip</h5>
+                            <p class="text-muted small">Always keep your password strong and your email updated for account recovery.</p>
+                        </div>
+                    </div>
+                    <div class="card border-0 shadow-sm rounded-4 p-4 text-center bg-dark text-white">
+                        <div class="card-body">
+                            <i class="fa-solid fa-star fs-1 text-warning mb-3"></i>
+                            <h5 class="fw-bold">Top Host Badge</h5>
+                            <p class="text-white-50 small">Consistently high ratings can earn you a Top Host badge on your listings.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    .btn-rounded { border-radius: 50px; }
+    .form-floating label { font-size: 0.9rem; font-weight: 600; color: #666; }
+    .extra-small { font-size: 0.8rem; }
+    .cursor-pointer { cursor: pointer; }
+    .hover-scale:hover { transform: scale(1.05); transition: 0.2s; }
+    .object-fit-cover { object-fit: cover; }
+    .bg-light { background-color: #f8f9fa !important; }
+</style>
+
+<script>
+    document.getElementById('avatarUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('avatarPreview');
+                const initials = document.getElementById('avatarInitials');
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+                if (initials) initials.classList.add('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

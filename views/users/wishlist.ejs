@@ -1,0 +1,78 @@
+<% layout("/layouts/boilerplate")%>
+
+<div class="container mt-5 mb-5 pb-5 dashboard-container">
+    <div class="mb-5">
+        <h1 class="fw-bold mb-1" style="background: linear-gradient(to right, var(--luxury-pink), var(--luxury-gold)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Your Wishlist</h1>
+        <p class="text-muted">A curated collection of your future escapes.</p>
+    </div>
+
+    <% if (allListings && allListings.length > 0) { %>
+        <div class="row row-cols-xxl-4 row-cols-xl-3 row-cols-md-2 row-cols-1 mt-3">
+            <% for(let listing of allListings){ %>
+                <div class="col position-relative">
+                    <div class="card listing-card fade-up">
+                        <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none">
+                            <div class="card-img-container">
+                                <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image">
+                                <div class="card-img-overlay d-flex align-items-end p-3" style="background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);">
+                                     <span class="badge px-3 py-2" style="background: linear-gradient(45deg, var(--luxury-pink), var(--luxury-gold)); border-radius: 50px; font-weight: 600; letter-spacing: 0.5px;">WISHED</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <form action="/wishlist/<%= listing._id %>" method="POST" class="position-absolute m-0" style="top: 1.2rem; right: 1.2rem; z-index: 10;">
+                            <button type="submit" class="btn btn-link p-0 border-0 shadow-none">
+                                <i class="fa-solid text-danger fa-heart fa-xl" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));"></i>
+                            </button>
+                        </form>
+
+                        <div class="card-body">
+                            <h3 class="card-title text-dark"><%= listing.title %></h3>
+                            <p class="card-location">
+                                <i class="fa-solid fa-location-dot me-2 text-muted opacity-50"></i>
+                                <%= listing.location %>, <%= listing.country %>
+                            </p>
+                            
+                            <div class="card-meta-section">
+                                <div class="rating-container">
+                                    <% if(listing.reviews && listing.reviews.length > 0) { %>
+                                        <% 
+                                            let totalRating = 0; 
+                                            listing.reviews.forEach(r => totalRating += r.rating);
+                                            let avgRating = (totalRating / listing.reviews.length).toFixed(1);
+                                        %>
+                                        <div class="stars-row d-inline-flex align-items-center">
+                                            <i class="fa-solid fa-star star-gold me-1"></i>
+                                            <span class="fw-bold text-dark"><%= avgRating %></span>
+                                            <span class="ms-1 text-muted small">(<%= listing.reviews.length %> reviews)</span>
+                                        </div>
+                                    <% } else { %>
+                                        <span class="text-muted small opacity-50 fst-italic">Newly curated</span>
+                                    <% } %>
+                                </div>
+
+                                <div class="price-row">
+                                    <span class="price-large">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+                                    <span class="price-unit">/ night</span>
+                                </div>
+
+                                <a href="/listings/<%= listing._id %>" class="text-decoration-none">
+                                    <button class="btn btn-book-now">VIEW DETAILS</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="text-center py-5 mt-5">
+            <div class="bg-white p-5 rounded-4 border shadow-sm mx-auto" style="max-width: 500px; border-style: dashed !important;">
+                <i class="fa-solid fa-heart-circle-plus display-2 text-muted opacity-25 mb-4"></i>
+                <h3 class="fw-bold">Your heart is light</h3>
+                <p class="text-muted mb-4 px-4">Start saving the properties you love to plan your next dream stay.</p>
+                <a href="/listings" class="btn btn-luxury-pill">Explore Destinations</a>
+            </div>
+        </div>
+    <% } %>
+</div>

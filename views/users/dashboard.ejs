@@ -1,0 +1,169 @@
+<% layout("/layouts/boilerplate")%>
+
+<div class="container mt-5 mb-5 pb-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold mb-1">Host Dashboard</h1>
+            <p class="text-muted mb-0">Welcome back! Here's what's happening with your properties.</p>
+        </div>
+        <a href="/listings/new" class="btn btn-danger rounded-pill px-4 shadow-sm border-0" style="background-color: #ff385c;">
+            <i class="fa-solid fa-plus me-2"></i>Create Listing
+        </a>
+    </div>
+    
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs nav-tabs-custom mb-5 border-bottom" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview & Reservations</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="listings-tab" data-bs-toggle="tab" data-bs-target="#listings" type="button" role="tab">My Listings</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="dashboardTabsContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card dashboard-stat-card border-0 rounded-4 p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="rounded-3 bg-light p-3">
+                                <i class="fa-solid fa-house mb-0 fs-4 text-whiteopacity-75"></i>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success p-2">Active</span>
+                        </div>
+                        <h2 class="fw-bold m-0 mt-2"><%= hostListings ? hostListings.length : 0 %></h2>
+                        <span class="text-muted fw-medium mt-1">Total Properties</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-stat-card border-0 rounded-4 p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="rounded-3 bg-light p-3">
+                                <i class="fa-regular fa-calendar-check mb-0 fs-4 text-white opacity-75"></i>
+                            </div>
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2">Booked</span>
+                        </div>
+                        <h2 class="fw-bold m-0 mt-2"><%= bookings ? bookings.length : 0 %></h2>
+                        <span class="text-muted fw-medium mt-1">Total Reservations</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-stat-card border-0 rounded-4 p-4 h-100" style="background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);">
+                        <% 
+                            let totalRevenue = 0;
+                            if (bookings) {
+                                bookings.forEach(b => totalRevenue += b.totalPrice);
+                            }
+                        %>
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="rounded-3 bg-success bg-opacity-10 p-3">
+                                <i class="fa-solid fa-indian-rupee-sign mb-0 fs-4 text-success"></i>
+                            </div>
+                        </div>
+                        <h2 class="fw-bold m-0 mt-2 text-success">₹<%= totalRevenue.toLocaleString("en-IN") %></h2>
+                        <span class="text-muted fw-medium mt-1">Estimated Earnings</span>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="fw-bold mb-4">Upcoming Reservations</h4>
+            <% if (bookings && bookings.length > 0) { %>
+                <div class="table-responsive bg-secondary border border-light rounded-4 shadow-sm p-2">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="py-3 px-4 text-muted small fw-bold">GUEST</th>
+                                <th class="py-3 px-4 text-muted small fw-bold">LISTING</th>
+                                <th class="py-3 px-4 text-muted small fw-bold">DATES</th>
+                                <th class="py-3 px-4 text-muted small fw-bold">STATUS</th>
+                                <th class="py-3 px-4 text-muted small fw-bold text-end">EARNINGS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(let booking of bookings){ %>
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 44px; height: 44px; font-weight: 600; font-size: 0.9rem;">
+                                                <%= booking.user && booking.user.username ? booking.user.username.charAt(0).toUpperCase() : 'G' %>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold text-white"><%= booking.user ? booking.user.username : 'Guest' %></div>
+                                                <small class="text-muted"><%= booking.guests || 1 %> <%= booking.guests === 1 ? 'person' : 'people' %></small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <img src="<%= booking.listing.image.url %>" class="rounded-2 me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                            <a href="/listings/<%= booking.listing._id %>" class="text-decoration-none fw-bold text-white hover-underline">
+                                                <%= booking.listing.title %>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="fw-medium"><%= booking.checkIn.toLocaleDateString('en-US', {month: 'short', day: '2-digit'}) %> - <%= booking.checkOut.toLocaleDateString('en-US', {month: 'short', day: '2-digit'}) %></div>
+                                        <small class="text-muted"><%= Math.ceil((booking.checkOut - booking.checkIn) / (1000 * 60 * 60 * 24)) %> nights</small>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="badge border border-success text-success status-badge rounded-pill px-3 py-2 bg-success bg-opacity-10"><%= booking.status %></span>
+                                    </td>
+                                    <td class="px-4 py-3 fw-bold text-white text-end">
+                                        ₹<%= booking.totalPrice.toLocaleString("en-IN") %>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <div class="text-center bg-secondary border rounded-4 p-5 mt-4 shadow-sm" style="border-style: dashed !important;">
+                    <i class="fa-solid fa-calendar-xmark display-4 text-secondary opacity-25 mb-3"></i>
+                    <h5 class="fw-bold text-white">No upcoming reservations</h5>
+                    <p class="text-muted mb-0">When guests book your listings, their details will appear right here.</p>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- My Listings Tab -->
+        <div class="tab-pane fade" id="listings" role="tabpanel">
+            <h4 class="fw-bold mb-4">Your Properties</h4>
+            <% if (hostListings && hostListings.length > 0) { %>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <% for(let listing of hostListings) { %>
+                        <div class="col">
+                            <div class="card listing-management-card h-100 shadow-sm">
+                                <div class="position-relative">
+                                    <img src="<%= listing.image.url %>" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                    <div class="position-absolute top-0 end-0 m-3">
+                                        <span class="badge bg-secondary text-white shadow-sm px-3 py-2 rounded-pill fw-bold">₹<%= listing.price.toLocaleString("en-IN") %></span>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4">
+                                    <h5 class="card-title fw-bold text-truncate"><%= listing.title %></h5>
+                                    <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot me-2"></i><%= listing.location %>, <%= listing.country %></p>
+                                    
+                                    <div class="d-flex gap-2 mt-auto pt-3 border-top">
+                                        <a href="/listings/<%= listing._id %>" class="btn btn-outline-dark rounded-pill px-4 flex-grow-1 small">View</a>
+                                        <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark rounded-pill px-4 flex-grow-1 small">Edit Property</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <div class="text-center bg-secondary border rounded-4 p-5 mt-4 shadow-sm" style="border-style: dashed !important;">
+                    <i class="fa-solid fa-house-circle-check display-3 text-danger opacity-25 mb-4"></i>
+                    <h5 class="fw-bold text-white">You haven't listed anything yet</h5>
+                    <p class="text-muted mb-4">Share your space and start earning with Wanderlust today.</p>
+                    <a href="/listings/new" class="btn btn-danger rounded-pill px-5 py-3 fw-bold shadow hover-shadow transition-all" style="background-color: #ff385c; border: none;">
+                        Add Your First Listing
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

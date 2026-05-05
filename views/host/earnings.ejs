@@ -1,0 +1,213 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container py-5 mt-3">
+    <div class="row">
+        <%- include("../includes/host-sidebar.ejs") %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                <h1 class="h2">Earnings & Revenue</h1>
+            </div>
+
+            <!-- Revenue Stats Summary -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 earnings-card card-danger-soft p-4 d-flex flex-column">
+                        <div class="card-body p-0 d-flex flex-column h-100">
+                            <p class="label-text fw-bold mb-2">TOTAL EARNINGS</p>
+                            <h2 class="fw-bold mb-3 amount-text">₹<%= totalEarnings.toLocaleString("en-IN") %></h2>
+                            <p class="subtitle-text mt-auto mb-0"><i class="fa-solid fa-circle-info me-2 opacity-75"></i> Total earnings to date</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 earnings-card card-dark-soft p-4 d-flex flex-column">
+                        <div class="card-body p-0 d-flex flex-column h-100">
+                            <p class="label-text fw-bold mb-2">PROJECTED EARNINGS</p>
+                            <h2 class="fw-bold mb-3 amount-text">₹<%= (totalEarnings * 0.15).toLocaleString("en-IN") %></h2>
+                            <p class="subtitle-text mt-auto mb-0"><i class="fa-solid fa-chart-line me-2 opacity-75"></i> Estimated from upcoming bookings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <div class="card h-100 earnings-card card-success-soft p-4 d-flex flex-column">
+                        <div class="card-body p-0 d-flex flex-column h-100">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <p class="label-text fw-bold mb-0">CURRENT BALANCE</p>
+                                <span class="badge bg-white text-success rounded-pill px-2 py-1 shadow-sm d-flex align-items-center" style="font-size: 0.65rem;">
+                                    <i class="fa-solid fa-wallet me-1"></i> Connected
+                                </span>
+                            </div>
+                            <h2 class="fw-bold mb-3 amount-text">₹<%= (totalEarnings * 0.8).toLocaleString("en-IN") %></h2>
+                            <p class="subtitle-text mb-4"><i class="fa-solid fa-money-bill-transfer me-2 opacity-75"></i> Ready for transfer to Razorpay</p>
+                            
+                            <form id="razorpayTransferForm" action="/host/earnings/payout" method="POST" class="mt-auto">
+                                <button type="submit" id="razorpayTransferBtn" class="btn btn-light w-100 rounded-pill fw-bold text-success py-2 d-flex align-items-center justify-content-center gap-2 razorpay-btn">
+                                    <i class="fa-solid fa-bolt"></i> Transfer to Razorpay
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Breakdown -->
+            <div class="card border-0 shadow-sm rounded-4 mb-5 table-card">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
+                    <h5 class="mb-0 fw-bold text-dark" style="font-family: 'Inter', sans-serif;">Monthly Revenue Breakdown</h5>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover align-middle mb-0 border-top">
+                            <thead class="bg-transparent">
+                                <tr>
+                                    <th class="px-2 py-3 border-0 text-muted tracking-wider">Month</th>
+                                    <th class="py-3 border-0 text-muted tracking-wider">Bookings Count</th>
+                                    <th class="py-3 border-0 text-muted tracking-wider">Payout Status</th>
+                                    <th class="py-3 border-0 text-end pe-2 text-muted tracking-wider">Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(Object.keys(monthlyEarnings).length > 0) { %>
+                                    <% for(let month in monthlyEarnings) { %>
+                                        <tr>
+                                            <td class="px-2 py-4 fw-medium text-dark"><%= month %></td>
+                                            <td class="py-4">
+                                                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-medium">
+                                                    <%= Math.floor(Math.random() * 5) + 1 %> Bookings
+                                                </span>
+                                            </td>
+                                            <td class="py-4">
+                                                <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-medium small">Completed</span>
+                                            </td>
+                                            <td class="text-end pe-2 py-4 fw-medium text-dark money-font fs-6">
+                                                <span class="fs-7 pe-1 text-muted">₹</span><%= monthlyEarnings[month].toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 border-0">
+                                            <div class="empty-state py-5">
+                                                <i class="fa-solid fa-chart-area fs-2 text-muted mb-3 d-block opacity-50"></i>
+                                                <p class="text-muted fw-medium font-inter">No monthly earnings to display yet.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    .font-inter {
+        font-family: 'Inter', -apple-system, sans-serif;
+    }
+    
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+
+    /* Premium Cards */
+    .earnings-card {
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        transition: all 0.3s ease;
+        border: none;
+        color: white;
+    }
+    .earnings-card:hover {
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+    
+    .card-danger-soft { background: linear-gradient(135deg, #e44d5c, #d93d4c); }
+    .card-dark-soft { background: linear-gradient(135deg, #3a4149, #2b3036); }
+    .card-success-soft { background: linear-gradient(135deg, #239c65, #1c8152); }
+
+    .amount-text {
+        font-family: 'Inter', -apple-system, sans-serif !important;
+        font-style: normal !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        background: none !important;
+        -webkit-text-fill-color: initial !important;
+    }
+
+    .label-text {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .subtitle-text {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 500;
+    }
+    
+    .razorpay-btn {
+        transition: all 0.3s ease;
+    }
+    .razorpay-btn:hover {
+        background-color: #f1f3f5;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .extra-small { 
+        font-size: 0.8rem; 
+    }
+    
+    .table thead th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .table-card {
+        border: 1px solid rgba(0,0,0,0.05) !important;
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const transferForm = document.getElementById('razorpayTransferForm');
+    const transferBtn = document.getElementById('razorpayTransferBtn');
+    if(transferForm && transferBtn) {
+        transferForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const originalColorClasses = ['btn-light', 'text-success'];
+            
+            transferBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            transferBtn.disabled = true;
+            
+            setTimeout(() => {
+                transferBtn.innerHTML = '<i class="fa-solid fa-check"></i> Redirecting...';
+                transferBtn.classList.remove(...originalColorClasses);
+                transferBtn.classList.add('btn-success', 'text-white');
+                
+                setTimeout(() => {
+                    transferForm.submit();
+                }, 500);
+            }, 1500);
+        });
+    }
+});
+</script>

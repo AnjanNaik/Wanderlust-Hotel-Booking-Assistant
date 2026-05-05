@@ -1,0 +1,104 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container py-5 mt-3">
+    <div class="row">
+        <!-- Sidebar -->
+        <%- include("../includes/host-sidebar.ejs") %>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                <h1 class="h2">My Listings</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/listings/new" class="btn btn-sm btn-outline-danger shadow-sm px-3 rounded-pill fw-bold">
+                        <i class="fa-solid fa-plus me-1"></i> Add New listing
+                    </a>
+                </div>
+            </div>
+
+            <!-- Listings Management Table -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="px-4 py-3 border-0">Listing Details</th>
+                                    <th class="py-3 border-0">Location</th>
+                                    <th class="py-3 border-0">Price</th>
+                                    <th class="py-3 border-0">Status</th>
+                                    <th class="py-3 border-0">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(listings.length > 0) { %>
+                                    <% for(let listing of listings) { %>
+                                        <tr>
+                                            <td class="px-4 py-3">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="<%= listing.image.url %>" class="rounded-3 me-3 shadow-sm" width="70" height="55" style="object-fit: cover;">
+                                                    <div>
+                                                        <span class="fw-bold d-block text-white mb-1"><%= listing.title %></span>
+                                                        <span class="text-muted small"><%= listing.category %></span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="text-muted"><i class="fa-solid fa-location-dot me-1"></i> <%= listing.location %>, <%= listing.country %></span>
+                                            </td>
+                                            <td class="fw-bold">₹<%= listing.price.toLocaleString("en-IN") %> /night</td>
+                                            <td>
+                                                <form action="/host/listings/<%= listing._id %>/status?_method=PATCH" method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold <%= listing.status === 'active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' %> border-0">
+                                                        <i class="fa-solid <%= listing.status === 'active' ? 'fa-circle-check' : 'fa-circle-minus' %> me-1"></i>
+                                                        <%= listing.status === 'active' ? 'Active' : 'Inactive' %>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <a href="/listings/<%= listing._id %>" class="btn btn-sm btn-outline-primary border-0 rounded-circle shadow-none d-flex align-items-center justify-content-center" title="View" style="width: 32px; height: 32px;">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                    </a>
+                                                    <a href="/listings/<%= listing._id %>/edit" class="btn btn-sm btn-outline-success border-0 rounded-circle shadow-none d-flex align-items-center justify-content-center" title="Edit" style="width: 32px; height: 32px;">
+                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                    </a>
+                                                    <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" class="m-0 d-inline-block">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger border-0 rounded-circle shadow-none d-flex align-items-center justify-content-center" title="Delete" style="width: 32px; height: 32px;">
+                                                            <i class="fa-solid fa-trash-can"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <div class="empty-state">
+                                                <i class="fa-solid fa-house-chimney-crack fs-1 text-muted mb-3 d-block"></i>
+                                                <h5>No listings yet?</h5>
+                                                <p class="text-muted mb-4">Start your hosting journey by adding your first listing.</p>
+                                                <a href="/listings/new" class="btn btn-danger btn-sm rounded-pill px-4 py-2 fw-bold">Wanderlust your home</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    .empty-state { padding: 4rem 1rem; }
+    .table thead th {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #6c757d;
+    }
+    .dropdown-item { font-size: 0.9rem; font-weight: 500; }
+    .dropdown-item:hover { background-color: #f8f9fa; }
+</style>

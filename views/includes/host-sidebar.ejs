@@ -1,0 +1,44 @@
+<div class="col-md-3 col-lg-2 d-md-block bg-secondary sidebar shadow-sm rounded-3 py-4 px-3 mb-4 sticky-md-top" style="height: fit-content; top: 100px;">
+    <div class="position-sticky">
+        <h5 class="d-flex align-items-center mb-4 px-3 text-danger">
+            <i class="fa-solid fa-gauge-high me-2"></i> Host Panel
+        </h5>
+        <ul class="nav flex-column gap-2">
+            <li class="nav-item">
+                <a class="nav-link rounded-pill d-flex align-items-center px-3 py-2 <%= activePage === 'dashboard' ? 'bg-danger text-white active' : 'text-white hover-bg-light' %>" href="/host/dashboard">
+                    <i class="fa-solid fa-chart-pie me-2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link rounded-pill d-flex align-items-center px-3 py-2 <%= activePage === 'listings' ? 'bg-danger text-white active' : 'text-white hover-bg-light' %>" href="/host/listings">
+                    <i class="fa-solid fa-list me-2"></i> My Listings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link rounded-pill d-flex align-items-center px-3 py-2 <%= activePage === 'bookings' ? 'bg-danger text-white active' : 'text-white hover-bg-light' %>" href="/host/bookings">
+                    <i class="fa-solid fa-calendar-check me-2"></i> Bookings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link rounded-pill d-flex align-items-center px-3 py-2 <%= activePage === 'earnings' ? 'bg-danger text-white active' : 'text-white hover-bg-light' %>" href="/host/earnings">
+                    <i class="fa-solid fa-sack-dollar me-2"></i> Earnings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link rounded-pill d-flex align-items-center px-3 py-2 <%= activePage === 'reviews' ? 'bg-danger text-white active' : 'text-white hover-bg-light' %>" href="/host/reviews">
+                    <i class="fa-solid fa-star me-2"></i> Reviews
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .nav-link.hover-bg-light:hover {
+        background-color: #f8f9fa;
+        color: #dc3545 !important;
+    }
+    .nav-link.active {
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+</style>

@@ -1,0 +1,153 @@
+<nav class="navbar navbar-expand-md sticky-top shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/listings">
+      <i class="fa-regular fa-compass me-2"></i>Wanderlust
+    </a>
+
+    <button class="navbar-toggler border-0 p-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+      <div class="hamburger-icon d-flex flex-column justify-content-between" style="width: 25px; height: 16px;">
+        <span style="height: 2px; width: 100%; background: white; border-radius: 2px;"></span>
+        <span style="height: 2px; width: 70%; background: #ff385c; border-radius: 2px; align-self: flex-end;"></span>
+        <span style="height: 2px; width: 100%; background: white; border-radius: 2px;"></span>
+      </div>
+    </button>
+
+    <!-- Smart Search Bar -->
+    <div class="navbar-search-container mx-auto d-none d-md-flex position-relative" style="max-width: 400px; width: 100%;">
+      <div class="search-pill glass-card d-flex align-items-center w-100" style="height: 48px; border-radius: 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 0 16px;">
+        <i class="fa-solid fa-magnifying-glass text-white opacity-50 me-3"></i>
+        <input type="text" id="nav-search-input" class="bg-transparent border-0 text-white w-100 shadow-none" placeholder="Search destinations..." style="outline: none; font-size: 0.9rem;">
+        <button id="nav-search-btn" class="btn p-0 border-0 ms-2" style="background: none;">
+          <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: #ff385c; z-index: 10001;">
+            <i class="fa-solid fa-magnifying-glass text-white" style="font-size: 0.8rem;"></i>
+          </div>
+        </button>
+      </div>
+      <!-- Suggestions Dropdown -->
+      <div id="smart-search-results" class="position-absolute d-none" style="top: calc(100% + 12px); left: 0; width: 100%; background: #ffffff; border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); overflow: hidden; box-shadow: 0 18px 45px rgba(0,0,0,0.18); z-index: 9999;">
+        <div id="suggestions-list" class="py-2" style="font-family: 'Inter', sans-serif;"></div>
+      </div>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav ms-auto align-items-center gap-3">
+        <a class="nav-link px-3" href="/listings">Explore</a>
+        <% if(currUser) { %>
+          <a class="nav-link px-3" href="/wishlist">Wishlists</a>
+          <a class="nav-link px-3" href="/my-bookings">Trips</a>
+        <% } %>
+        <a class="nav-link px-3" href="/listings/new">Host your home</a>
+
+        <div class="dropdown ms-lg-4 ms-2">
+          <div class="user-menu rounded-pill p-2 d-flex align-items-center gap-2 border-0"
+               id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" 
+               style="cursor: pointer; background: rgba(255,255,255,0.1); color: white; padding-right: 12px !important;">
+            <i class="fa-solid fa-bars ms-2"></i>
+            <div class="user-avatar rounded-circle d-flex align-items-center justify-content-center"
+                 style="width: 32px; height: 32px; background: var(--luxury-gold); color: white; font-weight: 700;">
+              <% if(currUser) { %>
+                <%= currUser.username.charAt(0).toUpperCase() %>
+              <% } else { %>
+                <i class="fa-solid fa-user" style="font-size: 0.9rem;"></i>
+              <% } %>
+            </div>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end mt-2 animate__animated animate__fadeInSmall" aria-labelledby="userMenuDropdown">
+            <% if(!currUser) { %>
+              <li><a class="dropdown-item fw-bold" href="/signup">Sign up</a></li>
+              <li><a class="dropdown-item" href="/login">Log in</a></li>
+            <% } else { %>
+              <li><a class="dropdown-item fw-bold" href="/host/dashboard">Dashboard</a></li>
+              <li><a class="dropdown-item" href="/host/profile">Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="/logout">Log out</a></li>
+            <% } %>
+          </ul>
+        </div>
+        
+        <% if(!currUser) { %>
+            <a href="/login" class="btn btn-luxury-pill ms-lg-3">Book Now</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("nav-search-input");
+    const resultsContainer = document.getElementById("smart-search-results");
+    const suggestionsList = document.getElementById("suggestions-list");
+
+    if (searchInput) {
+      // Show results on focus if there's text
+      searchInput.addEventListener("focus", () => {
+        if (searchInput.value.trim().length >= 1) resultsContainer.classList.remove("d-none");
+      });
+
+      // Hide on blur (with small delay so clicks on suggestions register)
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".navbar-search-container")) {
+          resultsContainer.classList.add("d-none");
+        }
+      });
+
+      searchInput.addEventListener("input", async (e) => {
+        const query = e.target.value.trim();
+        if (query.length < 1) {
+          resultsContainer.classList.add("d-none");
+          return;
+        }
+
+        try {
+          const response = await fetch(`/listings/suggestions?q=${encodeURIComponent(query)}`);
+          if (!response.ok) return;
+
+          const suggestions = await response.json();
+          suggestionsList.innerHTML = "";
+          
+          if (suggestions.length === 0) {
+            resultsContainer.classList.add("d-none");
+            return;
+          }
+
+          resultsContainer.classList.remove("d-none");
+          suggestions.forEach(suggestion => {
+            const item = document.createElement("div");
+            item.className = "suggestion-item d-flex align-items-center px-4 py-3 cursor-pointer";
+            item.style.cssText = "cursor: pointer; padding: 14px 18px; display: flex; align-items: center; gap: 12px; transition: all 0.25s ease; border-bottom: 1px solid rgba(0,0,0,0.03);";
+            item.innerHTML = `
+              <i class="fa-solid fa-location-dot" style="color: #6b7280; font-size: 18px; flex-shrink: 0;"></i>
+              <span style="color: #1f2937; font-weight: 500; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${suggestion}</span>
+            `;
+            item.onclick = () => {
+              window.location.href = `/listings?q=${encodeURIComponent(suggestion)}`;
+            };
+            suggestionsList.appendChild(item);
+          });
+        } catch (err) {
+          console.error("Search failed", err);
+        }
+      });
+
+      document.getElementById("nav-search-btn").onclick = () => {
+        if (searchInput.value.trim()) {
+          window.location.href = `/listings?q=${encodeURIComponent(searchInput.value.trim())}`;
+        }
+      };
+    }
+  });
+</script>
+
+<style>
+  .suggestion-item:hover {
+    background: rgba(255, 45, 85, 0.08) !important;
+  }
+  .suggestion-item:hover span {
+    color: #111827 !important;
+  }
+  .suggestion-item:last-child {
+    border-bottom: none !important;
+  }
+</style>

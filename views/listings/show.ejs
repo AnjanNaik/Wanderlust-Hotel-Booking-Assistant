@@ -1,0 +1,624 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  /* Local styles for the Luxury Hotel experience */
+  :root {
+    --hotel-purple: #6b21a8;
+    --hotel-pink: #e11d48;
+    --hotel-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    --hotel-glass: rgba(255, 255, 255, 0.9);
+  }
+
+  .luxury-show-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 5rem; /* Reduced top padding */
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-image-wrapper {
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    height: 480px; /* Reduced specific height */
+    box-shadow: var(--hotel-shadow);
+    margin-bottom: 2rem;
+    transition: transform 0.4s ease;
+  }
+
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .img-overlay-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+    pointer-events: none;
+  }
+
+  .listing-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: 2.4rem;
+    color: #1a1a1a;
+    margin: 0;
+  }
+
+  .save-button-pill {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px;
+    padding: 8px 22px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    color: #333;
+  }
+
+  .save-button-pill:hover {
+    background: #fdf2f2;
+    border-color: #ffcad4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  .meta-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 0.5rem;
+  }
+
+  .location-text {
+    font-weight: 600;
+    color: #444;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .owner-name {
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  .description-text {
+    line-height: 1.8;
+    color: #555;
+    font-size: 1.1rem;
+    margin: 2rem 0;
+  }
+
+  .action-pills-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 1.5rem;
+  }
+
+  .btn-pill-action {
+    border-radius: 50px;
+    padding: 10px 24px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-dark-hotel {
+    background: #111;
+    color: white;
+    border: none;
+  }
+
+  .btn-dark-hotel:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  }
+
+  .btn-soft-red {
+    background: #fff5f5;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+  }
+
+  .btn-soft-red:hover {
+    background: #fee2e2;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(229, 62, 62, 0.1);
+  }
+
+  /* Booking Card Redesign */
+  .booking-card-lux {
+    background: var(--hotel-glass);
+    backdrop-filter: blur(20px);
+    border-radius: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.1);
+    padding: 28px;
+    margin-left: 2rem;
+  }
+
+  .price-large {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #111;
+  }
+
+  .price-small {
+    font-size: 0.95rem;
+    color: #777;
+    font-weight: 400;
+  }
+
+  .date-guest-container {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.3s;
+  }
+
+  .date-guest-container:focus-within {
+    border-color: var(--hotel-pink);
+  }
+
+  .input-lux {
+    border: none;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: 100%;
+    background: transparent;
+  }
+
+  .input-label-lux {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    opacity: 0.6;
+    margin-bottom: 2px;
+    padding-left: 12px;
+  }
+
+  .reserve-btn-lux {
+    background: linear-gradient(135deg, #6b21a8, #e11d48);
+    color: white;
+    width: 100%;
+    border: none;
+    border-radius: 18px;
+    padding: 16px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 12px 24px rgba(225, 29, 72, 0.25);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .reserve-btn-lux:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 18px 35px rgba(225, 29, 72, 0.35);
+  }
+
+  .room-card-lux {
+    border: 1.5px solid #f1f5f9;
+    background: #f8fafc;
+    border-radius: 18px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .room-card-lux:hover {
+    transform: translateX(5px);
+    background: #fff;
+    border-color: #cbd5e1;
+  }
+
+  .room-card-lux.selected {
+    border-color: #ffced9;
+    background: #fffafa;
+    box-shadow: 0 8px 20px rgba(225, 29, 72, 0.1);
+  }
+
+  .divider-thin {
+    height: 1px;
+    background: #eee;
+    margin: 2.5rem 0;
+  }
+
+  @media (max-width: 992px) {
+    .booking-card-lux { margin-left: 0; margin-top: 2rem; }
+    .hero-image-wrapper { height: 350px; }
+  }
+</style>
+
+<div class="luxury-show-container">
+  <div class="row">
+    <!-- Left Column: Primary Content -->
+    <div class="col-lg-8">
+      <!-- Image Wrapper -->
+      <div class="hero-image-wrapper">
+        <img src="<%= listing.image.url %>" class="hero-img" alt="property-image">
+        <div class="img-overlay-bottom"></div>
+      </div>
+
+      <!-- Title & Save -->
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="listing-title"><%= listing.title %></h1>
+        <% const isWishlist = currUser && currUser.wishlist && currUser.wishlist.some(w => w.toString() === listing._id.toString()); %>
+        <form action="/wishlist/<%= listing._id %>" method="POST" class="m-0">
+          <button type="submit" class="save-button-pill">
+            <i class="<%= isWishlist ? 'fa-solid text-danger' : 'fa-regular' %> fa-heart"></i>
+            <span><%= isWishlist ? 'Saved' : 'Save' %></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Meta Info -->
+      <div class="meta-info">
+        <div class="location-text">
+          <i class="fa-solid fa-location-dot" style="color: var(--hotel-pink);"></i>
+          <%= listing.location %>, <%= listing.country %>
+        </div>
+        <span style="opacity: 0.3;">|</span>
+        <div class="owner-name text-muted">
+          Hosted by <b class="text-dark"><%= listing.owner.username %></b>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <p class="description-text">
+        <%= listing.description %>
+      </p>
+
+      <!-- Owner Actions -->
+      <% if(currUser && listing.owner._id.equals(currUser._id)){ %>
+        <div class="action-pills-row">
+          <a href="/listings/<%= listing._id %>/edit" class="btn btn-pill-action btn-dark-hotel">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Property
+          </a>
+          <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" class="m-0">
+            <button class="btn btn-pill-action btn-soft-red">
+              <i class="fa-solid fa-trash-can"></i> Delete Listing
+            </button>
+          </form>
+        </div>
+      <% } %>
+
+      <div class="divider-thin"></div>
+
+      <!-- Amenities Section -->
+      <% if(listing.amenities && listing.amenities.length > 0) { %>
+        <div class="mb-5">
+          <h4 class="mb-4 fw-bold">Boutique Amenities</h4>
+          <div class="row row-cols-md-2 g-4">
+            <% 
+              const amenityIcons = {
+                "Wifi": "fa-wifi", "TV": "fa-tv", "Kitchen": "fa-utensils", "Free Parking": "fa-square-parking",
+                "Air Conditioning": "fa-snowflake", "Pool": "fa-person-swimming", "Hot Tub": "fa-hot-tub-person",
+                "Gym": "fa-dumbbell", "Breakfast": "fa-mug-saucer", "Pets Allowed": "fa-paw",
+                "Smoke Alarm": "fa-bell", "First Aid Kit": "fa-kit-medical"
+              };
+            %>
+            <% listing.amenities.forEach(amenity => { %>
+              <div class="col d-flex align-items-center gap-3">
+                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                  <i class="fa-solid <%= amenityIcons[amenity] || 'fa-check' %> fs-5 text-dark opacity-75"></i>
+                </div>
+                <span class="fs-6 fw-semibold text-dark opacity-75"><%= amenity %></span>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        <div class="divider-thin"></div>
+      <% } %>
+
+      <!-- Map -->
+      <div class="mb-5">
+        <h4 class="mb-4 fw-bold">Explore the area</h4>
+        <div id="map" 
+             data-coordinates="<%= JSON.stringify(listing.geometry && listing.geometry.coordinates ? listing.geometry.coordinates : [77.2090, 28.6139]) %>" 
+             data-title="<%= listing.title %>" 
+             class="map-container rounded-4 shadow-sm border" 
+             style="height: 400px; width: 100%;"></div>
+      </div>
+      
+      <!-- Reviews Header -->
+      <% if(listing.reviews && listing.reviews.length > 0) { %>
+        <div class="divider-thin"></div>
+        <div class="mb-4">
+          <h4 class="mb-0 fw-bold text-dark">
+            Guest Reviews (<%= listing.reviews.length %>)
+          </h4>
+        </div>
+
+        <div class="row g-4 mb-5">
+          <% listing.reviews.forEach((review)=>{ %>
+            <div class="col-md-6">
+              <div class="card h-100 border-0 bg-light p-4 rounded-4 shadow-sm-hover transition-all">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center shadow-sm" 
+                       style="width: 48px; height: 48px; background: linear-gradient(135deg, #6b21a8, #e11d48); font-weight: 700; font-size: 1.1rem;">
+                    <%= review.author ? review.author.username.charAt(0).toUpperCase() : 'A' %>
+                  </div>
+                  <div class="ms-3">
+                    <h6 class="mb-0 fw-bold text-dark"><%= review.author ? review.author.username : 'Anonymous' %></h6>
+                    <small class="text-muted">Verified Guest</small>
+                  </div>
+                </div>
+                <p class="starability-result m-0 mb-3" data-rating="<%= review.rating %>" style="transform: scale(0.7); transform-origin: left;"></p>
+                <p class="text-dark small lh-base opacity-75"><%= review.comment %></p>
+                <% if(currUser && review.author && review.author._id.equals(currUser._id)){ %>
+                  <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mt-auto text-end">
+                    <button class="btn btn-link text-danger p-0 text-decoration-none small fw-bold">Delete</button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <!-- Leave Review -->
+      <% if(currUser){ %>
+        <div class="bg-white p-4 rounded-4 border shadow-sm mt-5">
+          <h5 class="mb-4 fw-bold">Add Your Story</h5>
+          <form action="/listings/<%= listing._id %>/reviews" method="POST">
+            <fieldset class="starability-slot mb-4">
+              <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+              <input type="radio" id="first-rate1" name="review[rating]" value="1" /><label for="first-rate1" title="Terrible">1 star</label>
+              <input type="radio" id="first-rate2" name="review[rating]" value="2" /><label for="first-rate2" title="Not good">2 stars</label>
+              <input type="radio" id="first-rate3" name="review[rating]" value="3" /><label for="first-rate3" title="Average">3 stars</label>
+              <input type="radio" id="first-rate4" name="review[rating]" value="4" /><label for="first-rate4" title="Very good">4 stars</label>
+              <input type="radio" id="first-rate5" name="review[rating]" value="5" /><label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
+            <textarea name="review[comment]" class="form-control border-0 rounded-4 p-3 mb-4" 
+                      style="background: #f8fafc; min-height: 120px;" 
+                      placeholder="Share details of your stay..." required></textarea>
+            <button type="submit" class="btn btn-dark rounded-pill px-5 py-2 fw-bold">Post Review</button>
+          </form>
+        </div>
+      <% } %>
+
+    </div>
+
+    <!-- Right Column: Reservation Card -->
+    <div class="col-lg-4">
+      <div class="booking-card-lux sticky-top" style="top: 100px;">
+        <div class="mb-4">
+          <div class="price-large">
+            ₹ <%= listing.price.toLocaleString("en-IN") %> <span class="price-small">/ night</span>
+          </div>
+        </div>
+
+        <form action="/listings/<%= listing._id %>/bookings" method="POST">
+          <div class="date-guest-container mb-4">
+            <div class="d-flex border-bottom">
+              <div class="p-2 w-50 border-end">
+                <div class="input-label-lux"><i class="fa-regular fa-calendar me-1"></i> Check-in</div>
+                <input type="date" class="input-lux" id="checkin" name="checkIn" required min="<%= new Date().toISOString().split('T')[0] %>">
+              </div>
+              <div class="p-2 w-50">
+                <div class="input-label-lux"><i class="fa-regular fa-calendar-check me-1"></i> Checkout</div>
+                <input type="date" class="input-lux" id="checkout" name="checkOut" required min="<%= new Date().toISOString().split('T')[0] %>">
+              </div>
+            </div>
+            <div class="p-2">
+              <div class="input-label-lux"><i class="fa-solid fa-user-group me-1"></i> Guests</div>
+              <input type="number" class="input-lux" id="guests" name="guests" value="1" min="1" max="20" required>
+            </div>
+          </div>
+
+          <!-- Room Selection -->
+          <div id="room-selection-container" class="d-none">
+            <p class="small fw-bold text-muted text-uppercase mb-3 ps-1">Select Suite Combination</p>
+            <div id="room-options"></div>
+          </div>
+
+          <!-- Price Summary -->
+          <div id="price-summary" class="mt-4 d-none">
+            <div class="p-3 rounded-4" style="background: rgba(0,0,0,0.03);">
+              <div class="d-flex justify-content-between mb-2">
+                <span id="price-computation" class="small text-muted">Price x 1 night</span>
+                <span id="base-price" class="small fw-bold">₹0</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span class="small text-muted">Luxury Tax (GST 18%)</span>
+                <span id="gst-amount" class="small fw-bold">₹0</span>
+              </div>
+              <div class="border-top mb-3 opacity-25"></div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Total Stay</span>
+                <span id="total-price" class="fs-4 fw-800" style="color: #6b21a8;">₹0</span>
+              </div>
+            </div>
+          </div>
+          
+
+
+          <% if(currUser) { %>
+            <button type="button" id="reserve-btn" class="reserve-btn-lux mt-4">Confirm Reservation</button>
+          <% } else { %>
+            <a href="/login" class="reserve-btn-lux mt-4 text-center text-white text-decoration-none d-block">Log in to book</a>
+          <% } %>
+        </form>
+        
+        <p class="text-center text-muted small mt-4 opacity-75">
+          <i class="fa-solid fa-shield-halved me-1"></i> Secured Checkout End-to-End
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/map.js"></script>
+<script>
+    const pricePerNight = Number("<%= listing.price %>"); 
+    const checkinInput = document.getElementById('checkin');
+    const checkoutInput = document.getElementById('checkout');
+    const priceSummary = document.getElementById('price-summary');
+    const reserveBtn = document.getElementById('reserve-btn');
+    const guestsInput = document.getElementById('guests');
+    const roomSelectionContainer = document.getElementById('room-selection-container');
+    const roomOptionsDiv = document.getElementById('room-options');
+    let selectedCombination = null;
+    
+    const computationEl = document.getElementById('price-computation');
+    const basePriceEl = document.getElementById('base-price');
+    const gstAmountEl = document.getElementById('gst-amount');
+    const totalPriceEl = document.getElementById('total-price');
+
+    function findCombinations(target) {
+        const results = [];
+        const sizes = [4, 3, 2];
+        function solve(remaining, startIdx, currentCombo) {
+            if (currentCombo.length > 4) return;
+            if (remaining <= 0) { results.push([...currentCombo]); return; }
+            for (let i = startIdx; i < sizes.length; i++) {
+                currentCombo.push(sizes[i]);
+                solve(remaining - sizes[i], i, currentCombo);
+                currentCombo.pop();
+            }
+        }
+        solve(target, 0, []);
+        const unique = []; const seen = new Set();
+        results.sort((a,b) => a.length - b.length).forEach(combo => {
+            const counts = {2:0, 3:0, 4:0}; combo.forEach(c => counts[c]++);
+            const key = `4:${counts[4]}|3:${counts[3]}|2:${counts[2]}`;
+            if(!seen.has(key)) { seen.add(key); unique.push(counts); }
+        });
+        return unique.slice(0, 4);
+    }
+
+    function renderRoomOptions() {
+        const guestCount = parseInt(guestsInput.value);
+        if (guestCount < 1) { roomSelectionContainer.classList.add('d-none'); return; }
+        const combos = findCombinations(guestCount);
+        roomOptionsDiv.innerHTML = '';
+        roomSelectionContainer.classList.remove('d-none');
+        combos.forEach((combo, idx) => {
+            const div = document.createElement('div');
+            div.className = `room-card-lux ${idx === 0 ? 'selected' : ''}`;
+            let desc = []; let mult = 0;
+            if (combo[4] > 0) { desc.push(`${combo[4]}x4-bd`); mult += combo[4]*1.8; }
+            if (combo[3] > 0) { desc.push(`${combo[3]}x3-bd`); mult += combo[3]*1.4; }
+            if (combo[2] > 0) { desc.push(`${combo[2]}x2-bd`); mult += combo[2]*1.0; }
+            const price = Math.round(pricePerNight * mult);
+            div.innerHTML = `<div class="d-flex justify-content-between align-items-center">
+                <span class="small fw-bold text-dark">${desc.join('+')}</span>
+                <span class="small fw-800 text-dark">₹${price.toLocaleString()}</span>
+            </div>`;
+            div.onclick = () => {
+                document.querySelectorAll('.room-card-lux').forEach(c => c.classList.remove('selected'));
+                div.classList.add('selected');
+                selectedCombination = { combo, price };
+                calculatePrice();
+            };
+            if (idx === 0) { selectedCombination = { combo, price }; }
+            roomOptionsDiv.appendChild(div);
+        });
+        calculatePrice();
+    }
+
+    function calculatePrice() {
+        if (!checkinInput.value || !checkoutInput.value || !selectedCombination) return;
+        const nights = Math.ceil((new Date(checkoutInput.value) - new Date(checkinInput.value)) / 86400000);
+        if (nights > 0) {
+            priceSummary.classList.remove('d-none');
+            const totalBase = nights * selectedCombination.price;
+            computationEl.innerText = `₹${selectedCombination.price.toLocaleString()} x ${nights} nights`;
+            basePriceEl.innerText = `₹${totalBase.toLocaleString()}`;
+            const gst = totalBase * 0.18;
+            gstAmountEl.innerText = `₹${gst.toLocaleString()}`;
+            totalPriceEl.innerText = `₹${Math.round(totalBase + gst).toLocaleString()}`;
+        } else { priceSummary.classList.add('d-none'); }
+    }
+    
+    guestsInput.addEventListener('input', renderRoomOptions);
+    checkinInput.addEventListener('change', () => {
+        const minOut = new Date(checkinInput.value);
+        minOut.setDate(minOut.getDate() + 1);
+        checkoutInput.min = minOut.toISOString().split('T')[0];
+        calculatePrice();
+    });
+    checkoutInput.addEventListener('change', calculatePrice);
+
+    if(reserveBtn) {
+        reserveBtn.addEventListener('click', async () => {
+            if (!checkinInput.value || !checkoutInput.value || !selectedCombination) return;
+            reserveBtn.disabled = true; reserveBtn.innerText = "Processing checkout...";
+            try {
+                const response = await fetch(`/listings/<%= listing._id %>/bookings/create-order`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        checkIn: checkinInput.value, 
+                        checkOut: checkoutInput.value, 
+                        guests: guestsInput.value, 
+                        paymentMethod: 'razorpay',
+                        selectedRooms: [
+                            ...(selectedCombination.combo[4] > 0 ? [{ type: '4-bed', count: selectedCombination.combo[4], price: Math.round(pricePerNight * 1.8) }] : []),
+                            ...(selectedCombination.combo[3] > 0 ? [{ type: '3-bed', count: selectedCombination.combo[3], price: Math.round(pricePerNight * 1.4) }] : []),
+                            ...(selectedCombination.combo[2] > 0 ? [{ type: '2-bed', count: selectedCombination.combo[2], price: Math.round(pricePerNight * 1.0) }] : [])
+                        ]
+                    })
+                });
+                const data = await response.json();
+                if (!data.success) { 
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
+                    } else {
+                        alert(data.message || "An error occurred");
+                        reserveBtn.disabled = false;
+                    }
+                    return; 
+                }
+                
+                const options = {
+                    key: data.key_id, amount: data.amount, currency: "INR", name: "Wanderlust Luxury", order_id: data.order_id,
+                    handler: async function (res) {
+                        const verify = await fetch(`/listings/<%= listing._id %>/bookings/verify-payment`, {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                paymentMethod: 'razorpay', 
+                                razorpay_order_id: res.razorpay_order_id, 
+                                razorpay_payment_id: res.razorpay_payment_id, 
+                                razorpay_signature: res.razorpay_signature, 
+                                booking_details: data.booking_details, 
+                                selectedRooms: data.selectedRooms 
+                            })
+                        });
+                        const verifyData = await verify.json();
+                        if (verifyData.redirectUrl) window.location.href = verifyData.redirectUrl;
+                        else if (verifyData.success) window.location.href = "/my-bookings";
+                        else { alert("Payment verification failed"); window.location.reload(); }
+                    },
+                    theme: { color: "#6b21a8" }
+                };
+                new Razorpay(options).open();
+                
+            } catch (err) { console.error(err); }
+            reserveBtn.disabled = false; reserveBtn.innerText = "Confirm Reservation";
+        });
+    }
+    if (guestsInput.value) renderRoomOptions();
+</script>

@@ -1,0 +1,219 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- Dashboard Custom Styles -->
+<style>
+    :root {
+        --dash-card-bg: rgba(255, 255, 255, 0.95);
+        --dash-icon-bg: #fdfcfb;
+    }
+
+    .dashboard-container {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .glass-stat-card {
+        background: var(--dash-card-bg);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 28px;
+        padding: 1.8rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .glass-stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+        border-color: rgba(225, 29, 72, 0.1);
+    }
+
+    .stat-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        background: var(--dash-icon-bg);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .stat-icon-wrapper i {
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, var(--luxury-pink), var(--luxury-gold));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-value {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        font-family: inherit;
+    }
+
+    .stat-label {
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #888;
+        margin-top: 4px;
+    }
+
+    /* Table Enhancements */
+    .dashboard-table-row {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+    }
+
+    .dashboard-table-row:hover {
+        background: #fdfcfb;
+    }
+
+    .badge-status-lux {
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .section-header {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<div class="container py-5 mt-3 dashboard-container">
+    <div class="row">
+        <!-- Sidebar -->
+        <%- include("../includes/host-sidebar.ejs") %>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-5">
+                <h1 class="h2 fw-bold" style="background: linear-gradient(to right, var(--luxury-pink), var(--luxury-gold)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Host Dashboard</h1>
+                <div class="btn-toolbar">
+                    <a href="/listings/new" class="btn btn-luxury-pill">
+                        <i class="fa-solid fa-plus me-2"></i> Add Listing
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="row g-4 mb-5">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="glass-stat-card">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-house-chimney"></i>
+                        </div>
+                        <div class="stat-value"><%= totalListings %></div>
+                        <div class="stat-label">My Listings</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="glass-stat-card">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-value"><%= totalBookings %></div>
+                        <div class="stat-label">Total Gests</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="glass-stat-card">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                        </div>
+                        <div class="stat-value">₹<%= totalEarnings.toLocaleString("en-IN") %></div>
+                        <div class="stat-label">Earnings</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="glass-stat-card">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-plane-arrival"></i>
+                        </div>
+                        <div class="stat-value"><%= upcomingBookings.length %></div>
+                        <div class="stat-label">Upcoming Stays</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="card border-0 bg-white rounded-4 p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="section-header mb-0">Upcoming Experiences</h5>
+                    <a href="/host/bookings" class="small fw-bold text-decoration-none" style="color: var(--luxury-pink);">Manage All <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">
+                            <tr class="border-bottom">
+                                <th class="py-3 px-2">Listing Details</th>
+                                <th class="py-3">Guest Profile</th>
+                                <th class="py-3 text-center">Stay Duration</th>
+                                <th class="py-3">Revenue</th>
+                                <th class="py-3 text-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(upcomingBookings.length > 0) { %>
+                                <% for(let booking of upcomingBookings) { %>
+                                    <tr class="dashboard-table-row">
+                                        <td class="py-3 px-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-3 shadow-sm me-3 bg-light" style="width: 65px; height: 48px; min-width: 65px; overflow: hidden;">
+                                                    <img src="<%= booking.listing.image.url %>" style="width: 100%; height: 100%; object-fit: cover;">
+                                                </div>
+                                                <span class="fw-bold text-dark text-truncate" style="max-width: 200px;"><%= booking.listing.title %></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-bold text-dark small"><%= booking.user.username %></span>
+                                                <span class="text-muted extra-small">Member since 2024</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="small fw-bold text-dark">
+                                                <%= new Date(booking.checkIn).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) %> - 
+                                                <%= new Date(booking.checkOut).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) %>
+                                            </div>
+                                            <div class="extra-small text-muted text-uppercase">Stay Period</div>
+                                        </td>
+                                        <td class="fw-bold text-dark">
+                                            ₹<%= booking.totalPrice.toLocaleString("en-IN") %>
+                                        </td>
+                                        <td class="text-end">
+                                            <% if(booking.status === 'Confirmed') { %>
+                                                <span class="badge-status-lux bg-success-subtle text-success">Confirmed</span>
+                                            <% } else { %>
+                                                <span class="badge-status-lux bg-warning-subtle text-warning">Pending</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5" class="text-center py-5">
+                                        <div class="py-4">
+                                            <i class="fa-solid fa-calendar-xmark text-muted opacity-25 mb-3" style="font-size: 3rem;"></i>
+                                            <p class="text-muted fw-bold">No upcoming guest stays</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
