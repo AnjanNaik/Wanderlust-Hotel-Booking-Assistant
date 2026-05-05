@@ -23,6 +23,13 @@ textarea {
 
 .navbar {
     background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+}
+.navbar > .container, .navbar > .container-fluid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 .hamburger-line {
@@ -369,7 +376,8 @@ textarea {
 
 .edit-original-img {
     height: 250px;
-    width: 350px;
+    width: 100%;
+    max-width: 350px;
     object-fit: cover;
     border-radius: 1rem;
 }
@@ -438,10 +446,14 @@ textarea {
 
 .search-bar {
     width: max-content;
+    max-width: 100%;
     padding: 0.5rem 1rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.2s ease;
     cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .search-bar:hover {
@@ -911,4 +923,77 @@ textarea {
     color: #222222;
     font-weight: 700;
     text-decoration: underline;
+}
+
+/* =========================================================================
+   Global Responsiveness & Layout Cleanups 
+   ========================================================================= */
+
+/* Clean & Spacious Layout */
+.container {
+    margin-top: 1.5rem; /* Breathing room between navbar and content */
+}
+
+/* Image Handling */
+.card-img-top, .index-img, .show-img, .edit-original-img {
+    object-fit: cover !important;
+    aspect-ratio: 4 / 3;
+}
+
+/* Global Responsiveness */
+@media (max-width: 992px) {
+    /* Tablet adjustments */
+    .search-bar {
+        width: 100%;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile adjustments */
+    .navbar {
+        padding: 0.8rem 1rem !important;
+    }
+    
+    .navbar-collapse {
+        flex-basis: 100%;
+        flex-grow: 1;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    
+    .search-bar {
+        width: 100%;
+        margin: 0.5rem 0;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .user-menu {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+
+    #filters {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .container, .container-fluid {
+        padding-left: 1.2rem !important;
+        padding-right: 1.2rem !important;
+    }
+    
+    .listing-card {
+        margin-bottom: 2.5rem;
+    }
+    
+    .tax-toggle {
+        min-width: 100%;
+        margin-top: 1rem;
+        justify-content: space-between;
+    }
 }
