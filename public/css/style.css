@@ -1,8 +1,20 @@
+/* ===== 1. GLOBAL RESET FOR RESPONSIVENESS ===== */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     font-family: "Plus Jakarta Sans", sans-serif !important;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow-x: hidden;
+    width: 100vw;
     user-select: none !important;
     -webkit-user-select: none !important;
     -moz-user-select: none !important;
@@ -19,6 +31,10 @@ textarea {
 
 .container {
     flex: 1;
+    width: 100%;
+    padding: 0 1rem;
+    margin: 0 auto;
+    max-width: 100%;
 }
 
 .navbar {
@@ -375,9 +391,9 @@ textarea {
 }
 
 .edit-original-img {
-    height: 250px;
+    height: 15.625rem;
     width: 100%;
-    max-width: 350px;
+    max-width: 21.875rem; /* 350px */
     object-fit: cover;
     border-radius: 1rem;
 }
@@ -395,8 +411,9 @@ textarea {
 }
 
 .map-container {
-    height: 400px;
+    height: 25rem; /* 400px */
     width: 100%;
+    max-width: 100%;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
     border: 1px solid rgba(138, 43, 226, 0.1);
@@ -445,8 +462,8 @@ textarea {
 
 
 .search-bar {
-    width: max-content;
-    max-width: 100%;
+    width: 100%;
+    max-width: 31.25rem; /* 500px in rem */
     padding: 0.5rem 1rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.2s ease;
@@ -512,7 +529,7 @@ textarea {
     border-radius: 18px;
     padding: 2rem;
     width: 100%;
-    max-width: 500px;
+    max-width: 31.25rem; /* 500px */
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
@@ -649,7 +666,7 @@ textarea {
     padding: 0.8rem;
     display: flex;
     align-items: center;
-    min-width: 250px;
+    min-width: 15.625rem; /* 250px */
     white-space: nowrap;
     position: relative;
     z-index: 1;
@@ -681,7 +698,7 @@ textarea {
 }
 
 .index-img {
-    height: 300px !important;
+    height: 18.75rem !important; /* 300px */
     width: 100% !important;
     object-fit: cover !important;
     border-radius: 1rem !important;
@@ -826,7 +843,7 @@ textarea {
     border-radius: 24px;
     padding: 3rem;
     width: 100%;
-    max-width: 480px;
+    max-width: 30rem; /* 480px */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
@@ -938,62 +955,255 @@ textarea {
 .card-img-top, .index-img, .show-img, .edit-original-img {
     object-fit: cover !important;
     aspect-ratio: 4 / 3;
+    max-width: 100%;
+    height: auto;
 }
 
-/* Global Responsiveness */
+/* ===== 3. LISTING GRID — CSS GRID (The 'Delta' Fix) ===== */
+.row.row-cols-xxl-4,
+.row[class*="row-cols-"] {
+    display: grid !important;
+    gap: 1.5rem;
+    padding: 0;
+}
+
+/* Desktop (> 992px) */
+@media (min-width: 992px) {
+    .row.row-cols-xxl-4,
+    .row[class*="row-cols-"] {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+/* Tablet (576px – 991px) */
+@media (min-width: 576px) and (max-width: 991px) {
+    .row.row-cols-xxl-4,
+    .row[class*="row-cols-"] {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Mobile (< 576px) */
+@media (max-width: 575px) {
+    .row.row-cols-xxl-4,
+    .row[class*="row-cols-"] {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Every listing card fills its grid cell */
+.row[class*="row-cols-"] > .col {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    flex: none !important;
+}
+
+.listing-card {
+    width: 100% !important;
+}
+
+/* ===== 4. FILTER BAR — Netflix-Style Scroll ===== */
+.filters-container {
+    overflow: hidden;
+}
+
+#filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 2rem;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#filters::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===== 5. AUTH PAGES — Centered Full-Viewport ===== */
+.auth-container,
+.auth-page-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.auth-card,
+.auth-card-modern,
+.glass-card {
+    width: 90%;
+    max-width: 25rem; /* 400px */
+}
+
+/* ===== 6. RESPONSIVE MEDIA QUERIES ===== */
+
+/* --- Tablet & below (< 992px) --- */
 @media (max-width: 992px) {
-    /* Tablet adjustments */
     .search-bar {
         width: 100%;
+        max-width: 31.25rem;
         justify-content: center;
         gap: 0.5rem;
     }
+
+    .tax-toggle {
+        min-width: 100%;
+        margin-top: 1rem;
+        justify-content: space-between;
+    }
+
+    .hero-section {
+        height: 60vh;
+    }
+
+    .swiper-slide-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .swiper-slide-content p {
+        font-size: 1rem;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 
+/* --- Mobile (< 768px) --- */
 @media (max-width: 768px) {
-    /* Mobile adjustments */
     .navbar {
-        padding: 0.8rem 1rem !important;
+        padding: 0.5rem 1rem !important;
+        flex-wrap: wrap;
     }
-    
+
+    .navbar > .container,
+    .navbar > .container-fluid {
+        flex-wrap: wrap;
+    }
+
     .navbar-collapse {
         flex-basis: 100%;
         flex-grow: 1;
         align-items: center;
         margin-top: 1rem;
     }
-    
+
     .search-bar {
         width: 100%;
+        max-width: 100%;
         margin: 0.5rem 0;
         flex-direction: column;
         align-items: center;
     }
-    
+
+    .search-bar input {
+        width: 100% !important;
+        max-width: 31.25rem;
+    }
+
     .user-menu {
-        width: 100%;
+        width: auto;
         display: flex;
         justify-content: center;
         margin-top: 0.5rem;
     }
 
     #filters {
-        padding: 1rem;
+        padding: 0.75rem 1rem;
         gap: 1.5rem;
     }
 
     .container, .container-fluid {
-        padding-left: 1.2rem !important;
-        padding-right: 1.2rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
-    
+
     .listing-card {
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
     }
-    
-    .tax-toggle {
-        min-width: 100%;
-        margin-top: 1rem;
-        justify-content: space-between;
+
+    .filters-main {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .card-img-container {
+        height: auto !important;
+    }
+
+    .index-img {
+        height: 15rem !important;
+    }
+
+    .show-img {
+        height: auto !important;
+        max-height: 50vh;
+    }
+
+    /* Font sizing adjustments (rem) */
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+
+    .btn-luxury-pill {
+        padding: 0.6rem 1.2rem !important;
+        font-size: 0.85rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.4rem !important;
+    }
+
+    .dropdown-menu {
+        min-width: 200px !important;
+    }
+
+    .map-container {
+        height: 250px;
+        border-radius: 1rem;
+    }
+
+    .footer-nav {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* --- Small phones (< 480px) --- */
+@media (max-width: 480px) {
+    .footer-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-card,
+    .auth-card-modern {
+        padding: 1.5rem;
+    }
+
+    .hero-section {
+        height: 50vh;
+    }
+
+    .swiper-slide-content h1 {
+        font-size: 1.75rem;
+    }
+
+    .swiper-slide-content p {
+        font-size: 0.875rem;
+    }
+
+    .edit-original-img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .action-btn {
+        width: auto;
+        min-width: 5rem;
     }
 }
