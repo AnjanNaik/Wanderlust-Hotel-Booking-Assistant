@@ -19,8 +19,9 @@
     }
 
     .trip-img-container {
-        width: 320px;
-        min-width: 320px;
+        width: 20rem; /* 320px */
+        min-width: 20rem;
+        max-width: 100%;
         height: auto;
         overflow: hidden;
     }
@@ -126,7 +127,15 @@
 
     @media (max-width: 991px) {
         .trip-card-lux { flex-direction: column; }
-        .trip-img-container { width: 100%; height: 200px; }
+        .trip-img-container { width: 100%; min-width: 100%; height: 12.5rem; }
+    }
+
+    @media (max-width: 768px) {
+        .trip-content { padding: 1.25rem; }
+        .trip-title { font-size: 1.15rem; }
+        .trip-meta { flex-wrap: wrap; gap: 0.5rem; font-size: 0.8rem; }
+        .trip-detail-pill { flex: 1; min-width: 0; }
+        .d-flex.gap-3 { flex-wrap: wrap; }
     }
 </style>
 
@@ -197,7 +206,7 @@
         </div>
     <% } else { %>
         <div class="text-center py-5 mt-5">
-            <div class="bg-white p-5 rounded-4 border shadow-sm mx-auto" style="max-width: 500px; border-style: dashed !important;">
+            <div class="bg-white p-5 rounded-4 border shadow-sm mx-auto" style="max-width: 31.25rem; width: 90%; border-style: dashed !important;">
                 <i class="fa-solid fa-suitcase-rolling display-2 text-muted opacity-25 mb-4"></i>
                 <h3 class="fw-bold">No trips planned... yet!</h3>
                 <p class="text-muted mb-4 px-4">Time to dust off your bags and start planning your next journey into paradise.</p>
