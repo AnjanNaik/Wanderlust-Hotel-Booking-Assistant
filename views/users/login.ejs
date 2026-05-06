@@ -1,7 +1,7 @@
 <% layout("/layouts/boilerplate") %>
 
 <!-- Cinematic Splash Screen -->
-<div id="stitchSplashScreen" style="position: fixed; top: 0; left: 0; width: 100vw; max-width: 100%; height: 100vh; z-index: 9999; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;">
+<div id="stitchSplashScreen" style="position: fixed; top: 0; left: 0; width: 100vw; max-width: 100%; height: 100vh; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: #000; transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;">
     <!-- Cinematic Travel Image Background -->
     <div style="position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; z-index: 1; filter: brightness(0.65); animation: splashZoom 6s ease-out forwards;"></div>
     
@@ -27,7 +27,7 @@
         position: relative; 
         z-index: 2; 
         font-family: 'Outfit', 'Inter', sans-serif; 
-        font-size: clamp(2.5rem, 10vw, 8rem); 
+        font-size: clamp(3.5rem, 12vw, 8rem); 
         font-weight: 800; 
         letter-spacing: clamp(-1px, -0.15vw, -2px); 
         background: linear-gradient(45deg, #00d2ff, #3a7bd5, #ff007f, #7928ca);
@@ -145,8 +145,8 @@
     }
 
     .glass-anim-container {
-        width: 90%;
-        max-width: 26rem;
+        width: 100%;
+        max-width: 28rem;
         opacity: 0;
         animation: stitchCrazyDrop 1s cubic-bezier(0.16, 1, 0.3, 1) 5.2s forwards;
     }
@@ -230,8 +230,8 @@
 
     /* Tablet breakpoint */
     @media (max-width: 768px) {
-        .glass-wrapper { padding: 1.25rem; }
-        .glass-anim-container { max-width: 24rem; }
+        .glass-wrapper { padding: 1rem; }
+        .glass-anim-container { max-width: 26rem; width: 95%; }
         .orb-1, .orb-2, .orb-3 { opacity: 0.3; }
     }
 
@@ -239,22 +239,22 @@
     @media (max-width: 480px) {
         .glass-card {
             border-radius: 1.25rem !important;
-            transform: none !important; /* Disable 3D tilt on mobile */
+            transform: none !important;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.06) !important;
         }
-        .glass-card::before { display: none; } /* Disable spotlight border on mobile for perf */
+        .glass-card::before { display: none; }
         .glass-card::after { display: none; }
         .glass-wrapper { padding: 0.75rem; }
-        .glass-anim-container { width: 95%; max-width: 22rem; }
-        .cinematic-input { height: 3rem !important; font-size: 0.9rem !important; }
-        .cinematic-btn { height: 3rem !important; font-size: 0.95rem !important; }
+        .glass-anim-container { width: 100%; max-width: 100%; padding: 0 0.75rem; }
+        .cinematic-input { height: 3.25rem !important; font-size: 1rem !important; }
+        .cinematic-btn { height: 3.25rem !important; font-size: 1rem !important; }
         .orb-1, .orb-2, .orb-3 { opacity: 0.2; filter: blur(60px); }
-        .auth-footer-text { font-size: 0.85rem !important; }
+        .auth-footer-text { font-size: 0.9rem !important; }
     }
 
     /* Very small phones (iPhone SE) */
     @media (max-width: 360px) {
-        .glass-anim-container { width: 98%; }
+        .glass-anim-container { padding: 0 0.5rem; }
         .glass-wrapper { padding: 0.5rem; }
     }
 
