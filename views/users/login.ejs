@@ -1,112 +1,388 @@
 <% layout("/layouts/boilerplate") %>
 
+<!-- Cinematic Splash Screen -->
+<div id="stitchSplashScreen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;">
+    <!-- Cinematic Travel Image Background -->
+    <div style="position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; z-index: 1; filter: brightness(0.65); animation: splashZoom 6s ease-out forwards;"></div>
+    
+    <!-- Vibrant Animated Text -->
+    <h1 class="splash-text">
+        Wanderlust
+    </h1>
+</div>
+
 <style>
     body {
         overflow-x: hidden;
     }
+    
+    /* Splash Screen Animations */
+    @keyframes splashZoom {
+        0% { transform: scale(1.15); opacity: 0; }
+        15% { opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .splash-text {
+        position: relative; 
+        z-index: 2; 
+        font-family: 'Outfit', 'Inter', sans-serif; 
+        font-size: clamp(4rem, 10vw, 8rem); 
+        font-weight: 800; 
+        letter-spacing: -2px; 
+        background: linear-gradient(45deg, #00d2ff, #3a7bd5, #ff007f, #7928ca);
+        background-size: 300% 300%;
+        -webkit-background-clip: text; 
+        -webkit-text-fill-color: transparent; 
+        background-clip: text;
+        opacity: 0; /* start hidden */
+        /* Wait 2.5s for video to play, then reveal text for 2.5s */
+        animation: splashTextReveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 2.5s forwards, gradientText 4s ease infinite;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+    }
+
+    @keyframes gradientText {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes splashTextReveal {
+        0% { opacity: 0; transform: translateY(60px) scale(0.8); filter: blur(20px) drop-shadow(0 10px 20px rgba(0,0,0,0.6)); }
+        20% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0) drop-shadow(0 10px 20px rgba(0,0,0,0.6)); }
+        80% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0) drop-shadow(0 10px 20px rgba(0,0,0,0.6)); }
+        100% { opacity: 0; transform: translateY(-30px) scale(1.05); filter: blur(10px) drop-shadow(0 10px 20px rgba(0,0,0,0.6)); }
+    }
+
+    .splash-fade-out {
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+
     .footer-container {
         display: none !important; /* Hide page footer for true edge-to-edge auth experience */
     }
     .container {
-        /* Ensure the main container doesn't block edge-to-edge layout */
         max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .navbar {
+        display: none !important; /* Hide navbar for edge-to-edge auth experience */
     }
     .bg-slider-container {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden;
+    }
+    @keyframes kenBurns {
+        0% { transform: scale(1); }
+        100% { transform: scale(1.12); }
     }
     .bg-slide {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background-size: cover; background-position: center; background-repeat: no-repeat;
         opacity: 0; transition: opacity 2s ease-in-out; z-index: 1;
+        transform: scale(1);
+        will-change: transform, opacity;
     }
-    .bg-slide.prev-active { opacity: 1; z-index: 2; }
-    .bg-slide.active { opacity: 1; z-index: 3; }
-    .auth-bg { background-image: none !important; }
-    .auth-overlay { z-index: 3; background: linear-gradient(135deg, rgba(8, 8, 8, 0.7) 0%, rgba(15, 0, 30, 0.6) 100%); }
+    .bg-slide.prev-active { opacity: 1; z-index: 2; animation: kenBurns 8s linear forwards; }
+    .bg-slide.active { opacity: 1; z-index: 3; animation: kenBurns 8s linear forwards; }
+    .auth-bg { background-color: #050505; position: relative; min-height: 100vh; }
+    
+    .auth-overlay { 
+        z-index: 3; 
+        background: radial-gradient(circle at center, rgba(10, 10, 15, 0.4) 0%, rgba(5, 5, 8, 0.9) 100%);
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    }
+
+    /* Ambient Animated Orbs behind the card */
+    .ambient-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(90px);
+        z-index: 3;
+        animation: floatOrb 12s infinite ease-in-out alternate;
+        opacity: 0.45;
+        pointer-events: none;
+    }
+    .orb-1 { width: 400px; height: 400px; background: #4f46e5; top: -10%; left: 10%; animation-delay: 0s; }
+    .orb-2 { width: 350px; height: 350px; background: #ec4899; bottom: -5%; right: 10%; animation-delay: -5s; }
+
+    @keyframes floatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(40px, -60px) scale(1.1); }
+    }
+
+    .glass-wrapper {
+        position: relative;
+        z-index: 4;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+        perspective: 1200px; /* Perspective for 3D tilt */
+    }
+
+    .glass-anim-container {
+        width: 100%;
+        max-width: 440px;
+        opacity: 0;
+        /* Wait 5 seconds for the video splash screen before animating in */
+        animation: stitchCrazyDrop 1s cubic-bezier(0.16, 1, 0.3, 1) 5.2s forwards;
+    }
+
+    @keyframes stitchCrazyDrop {
+        0% { opacity: 0; transform: translateY(40px) scale(0.96); filter: blur(8px); }
+        100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
     .glass-card { 
-        z-index: 4; position: relative; 
-        background: rgba(19, 19, 19, 0.65) !important;
-        backdrop-filter: blur(35px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 20px !important;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
-        color: #e5e2e1 !important;
+        background: rgba(10, 10, 20, 0.55) !important;
+        backdrop-filter: blur(30px) saturate(200%) !important;
+        -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+        border-radius: 28px !important;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+        color: #ffffff !important;
+        width: 100%;
+        padding: 3.5rem 2.5rem;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+        will-change: transform;
     }
+
+    /* Interactive Spotlight Border */
+    .glass-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 28px;
+        padding: 1px; /* border width */
+        background: radial-gradient(
+            600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+            rgba(165, 180, 252, 0.8), /* Indigo spotlight */
+            rgba(255, 255, 255, 0.05) 40%
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: 10;
+        opacity: 0.8;
+        transition: opacity 0.5s ease;
+    }
+
+    /* Interactive Background Glow */
+    .glass-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 28px;
+        background: radial-gradient(
+            800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+            rgba(99, 102, 241, 0.08), /* Soft indigo internal glow */
+            transparent 40%
+        );
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .glass-card:hover {
+        box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+    }
+
+    .glass-card:hover::after {
+        opacity: 1;
+    }
+
+    /* Pop out content on tilt */
+    .card-content-wrapper {
+        transform: translateZ(35px);
+        transition: transform 0.3s ease;
+        position: relative;
+        z-index: 2;
+    }
+
+    @media (max-width: 480px) {
+        .glass-card {
+            padding: 2.5rem 1.5rem;
+            border-radius: 24px !important;
+            transform: none !important; /* Disable 3D tilt on mobile for better UX */
+        }
+        .glass-wrapper { padding: 1rem; }
+    }
+
     .cinematic-input {
-        background: #0e0e0e !important;
-        border: 1px solid #353534 !important;
-        color: #e5e2e1 !important;
-        border-radius: 12px !important;
-        transition: all 0.3s ease !important;
+        background: rgba(15, 15, 25, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+        border-radius: 14px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        font-size: 1rem !important;
+        height: 3.5rem !important;
+        padding-left: 3.2rem !important;
     }
     .cinematic-input::placeholder {
-        color: rgba(255, 255, 255, 0.65) !important;
-        font-weight: 500 !important;
+        color: rgba(255, 255, 255, 0.3) !important;
+        font-weight: 400 !important;
     }
     .cinematic-input:focus {
-        border-color: #4f46e5 !important;
-        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15) !important;
-        background: #131313 !important;
+        border-color: #a5b4fc !important; /* Premium Indigo focus */
+        box-shadow: 0 0 0 4px rgba(165, 180, 252, 0.15) !important;
+        background: rgba(20, 20, 35, 0.6) !important;
+        transform: translateY(-2px);
     }
+    
+    /* Override ugly Bootstrap validation colors */
+    .was-validated .form-control:invalid, .form-control.is-invalid {
+        border-color: rgba(255, 99, 132, 0.5) !important; /* Soft aesthetic red */
+        background-image: none !important; /* Remove bootstrap icon */
+    }
+    .was-validated .form-control:invalid:focus {
+        border-color: #ff6384 !important;
+        box-shadow: 0 0 0 4px rgba(255, 99, 132, 0.15) !important;
+    }
+    .was-validated .form-control:valid, .form-control.is-valid {
+        border-color: rgba(75, 192, 192, 0.4) !important; /* Soft aesthetic green */
+        background-image: none !important;
+    }
+    .was-validated .form-control:valid:focus {
+        border-color: #4bc0c0 !important;
+        box-shadow: 0 0 0 4px rgba(75, 192, 192, 0.15) !important;
+    }
+    
+    .input-icon-wrapper {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 3.2rem;
+        height: 100%;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .input-icon-wrapper i {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .cinematic-input:focus ~ .input-icon-wrapper i {
+        color: #a5b4fc;
+        transform: scale(1.1);
+    }
+
     .cinematic-btn {
-        background: #4f46e5 !important;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
         color: #ffffff !important;
-        border-radius: 20px !important;
+        border-radius: 14px !important;
         border: none !important;
         font-weight: 600 !important;
+        font-size: 1.05rem !important;
         text-transform: none !important;
         letter-spacing: 0.5px !important;
-        transition: transform 0.2s, box-shadow 0.2s !important;
+        transition: all 0.3s ease !important;
+        position: relative;
+        overflow: hidden;
+        height: 3.5rem !important;
+        transform: translateZ(10px); /* slightly pop the button */
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+    }
+    .cinematic-btn::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transform: skewX(-20deg);
+        transition: all 0.6s ease;
     }
     .cinematic-btn:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(79, 70, 229, 0.35) !important;
+        transform: translateY(-3px) translateZ(15px) !important;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5) !important;
     }
-    .cinematic-link { color: #c3c0ff !important; transition: text-shadow 0.3s ease; }
-    .cinematic-link:hover { color: #e2dfff !important; text-shadow: 0 0 10px rgba(195, 192, 255, 0.5); }
+    .cinematic-btn:hover::after {
+        left: 150%;
+    }
+    .cinematic-link { color: #a5b4fc !important; transition: all 0.3s ease; text-decoration: none; position: relative; }
+    .cinematic-link:hover { color: #ffffff !important; text-shadow: 0 0 12px rgba(255, 255, 255, 0.4); }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 </style>
 
 <div class="auth-bg">
     <div class="bg-slider-container" id="dynamicAuthBg"></div>
     <div class="auth-overlay"></div>
-    <div class="glass-card fade-up">
-        <div class="text-center mb-4">
-            <div class="auth-brand-logo mb-3" style="font-size: 2.5rem; color: #4f46e5;">
-                <i class="fa-regular fa-compass"></i>
-            </div>
-            <h2 style="font-weight: 700; font-family: 'Outfit', 'Inter', sans-serif; font-size: 2.2rem; margin-bottom: 5px; letter-spacing: -1px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">Wanderlust</h2>
-            <p style="font-size: 0.95rem; opacity: 0.85; font-family: 'Inter', sans-serif;">The Digital Concierge.</p>
-        </div>
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    
+    <div class="glass-wrapper">
+        <div class="glass-anim-container">
+            <div class="glass-card" id="interactiveCard">
+                <div class="card-content-wrapper">
+                    <div class="text-center mb-4 pb-2">
+                        <div class="mb-3" style="font-size: 2.8rem; color: #ffffff; filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));">
+                            <i class="fa-regular fa-compass"></i>
+                        </div>
+                        <h2 class="gradient-text" style="font-weight: 700; font-family: 'Outfit', 'Inter', sans-serif; font-size: 2.2rem; margin-bottom: 5px; letter-spacing: -1px;">Wanderlust</h2>
+                        <p style="font-size: 0.95rem; color: rgba(255,255,255,0.7); font-family: 'Inter', sans-serif;">The Digital Concierge.</p>
+                    </div>
 
-        <form action="/login" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3 position-relative d-flex align-items-center">
-                <div class="position-absolute d-flex justify-content-center align-items-center" style="width: 3rem; height: 100%; left: 0; pointer-events: none;">
-                    <i class="fa-solid fa-user" style="color: rgba(255,255,255,0.7); font-size: 1.05rem;"></i>
+                    <form action="/login" method="POST" class="needs-validation" novalidate>
+                        <div class="mb-3 position-relative">
+                            <input name="username" id="username" type="text" class="form-control cinematic-input shadow-none" placeholder="Username" required>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 position-relative">
+                            <input name="password" id="password" type="password" class="form-control cinematic-input shadow-none" placeholder="Password" required>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn cinematic-btn w-100 mb-4">Sign In</button>
+                    </form>
+
+                    <div class="text-center auth-footer-text" style="font-family: 'Inter', sans-serif; font-size: 0.95rem; color: rgba(255,255,255,0.6);">
+                        New to Wanderlust? <a href="/signup" class="fw-bold cinematic-link">Create an account</a>
+                    </div>
                 </div>
-                <input name="username" id="username" type="text" class="form-control cinematic-input shadow-none" style="padding-left: 2.8rem !important; height: 3.2rem;" placeholder="Username" required>
             </div>
-
-            <div class="mb-4 position-relative d-flex align-items-center">
-                <div class="position-absolute d-flex justify-content-center align-items-center" style="width: 3rem; height: 100%; left: 0; pointer-events: none;">
-                    <i class="fa-solid fa-lock" style="color: rgba(255,255,255,0.7); font-size: 1.05rem;"></i>
-                </div>
-                <input name="password" id="password" type="password" class="form-control cinematic-input shadow-none" style="padding-left: 2.8rem !important; height: 3.2rem;" placeholder="Password" required>
-            </div>
-
-            <button type="submit" class="btn cinematic-btn w-100 mb-4 py-2">Sign In</button>
-        </form>
-
-        <div class="text-center auth-footer-text" style="font-family: 'Inter', sans-serif;">
-            New to Wanderlust? <a href="/signup" class="fw-bold cinematic-link text-decoration-none">Create an account</a>
         </div>
     </div>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        // Handle Splash Screen
+        const splash = document.getElementById('stitchSplashScreen');
+        
+        // Play the cinematic splash screen every time the page loads
+        setTimeout(() => {
+            splash.classList.add('splash-fade-out');
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 800); // Wait for fade out transition
+        }, 5000); // Wait 5 seconds so video plays and text pops at the end
+
+
+        // High quality, cinematic architectural and travel imagery
         const bgImages = [
-            'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
             'https://images.unsplash.com/photo-1542314831-c6a4d2759827?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
             'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
             'https://images.unsplash.com/photo-1522798514397-e0d2f0eb3ee8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
             'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -115,31 +391,61 @@
         const container = document.getElementById('dynamicAuthBg');
         let slides = [];
         
-        // Generate DOM elements for cross-fade
         bgImages.forEach((src, index) => {
             const slide = document.createElement('div');
             slide.className = 'bg-slide' + (index === 0 ? ' active' : '');
             slide.style.backgroundImage = `url('${src}')`;
             container.appendChild(slide);
             slides.push(slide);
-            
-            // Preload image
             const img = new Image();
             img.src = src;
         });
 
         let currentIndex = 0;
-        setInterval(() => {
+        function nextSlide() {
             const prevSlide = slides[currentIndex];
             prevSlide.classList.remove('active');
             prevSlide.classList.add('prev-active');
-            
             currentIndex = (currentIndex + 1) % slides.length;
             slides[currentIndex].classList.add('active');
-            
             setTimeout(() => {
                 prevSlide.classList.remove('prev-active');
             }, 2000);
-        }, 4000); // Smooth, majestic transition every 4 seconds
+        }
+
+        setTimeout(() => {
+            nextSlide();
+            setInterval(nextSlide, 5000);
+        }, 100); 
+
+        // Interactive Card Effect
+        const card = document.getElementById('interactiveCard');
+        
+        // Only apply 3D effect on non-touch devices
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Update CSS variables for spotlight
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                
+                // Calculate 3D tilt
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                // Limit the rotation angle for a subtle effect
+                const rotateX = ((y - centerY) / centerY) * -6; 
+                const rotateY = ((x - centerX) / centerX) * 6;
+                
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                // Spotlight variables remain to fade out naturally if needed
+            });
+        }
     });
 </script>

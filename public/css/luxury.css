@@ -12,6 +12,15 @@
     --card-shadow: 0 10px 30px rgba(79, 70, 229, 0.08);
     --hover-shadow: 0 20px 40px rgba(225, 29, 72, 0.15);
     --transition-smooth: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-full: 999px;
+    --grid-unit: 8px;
 }
 
 
@@ -31,12 +40,46 @@ h1, h2, h3, .navbar-brand {
 
 /* Navbar Enhancements */
 .navbar {
-    background: rgba(18, 18, 18, 0.3) !important; /* Slightly transparent */
-    backdrop-filter: blur(15px);
+    background: rgba(10, 10, 10, 0.85) !important; /* Premium Dark Background */
+    backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     padding: 1rem 2rem !important;
-    transition: var(--transition-smooth);
+    transition: all 0.4s ease-in-out !important;
     z-index: 9999 !important; /* Higher than sticky cards */
+}
+
+/* Scrolled Navbar State */
+.navbar.navbar-scrolled {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.navbar.navbar-scrolled .nav-link {
+    color: var(--luxury-charcoal) !important;
+}
+.navbar.navbar-scrolled .nav-link:hover {
+    color: var(--luxury-pink) !important;
+}
+.navbar.navbar-scrolled .hamburger-icon .bar {
+    background: var(--luxury-charcoal) !important;
+}
+.navbar.navbar-scrolled .user-menu {
+    background: rgba(0, 0, 0, 0.05) !important;
+    color: var(--luxury-charcoal) !important;
+}
+.navbar.navbar-scrolled .search-pill {
+    background: rgba(0,0,0,0.05) !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+}
+.navbar.navbar-scrolled .search-pill i.text-white {
+    color: var(--luxury-charcoal) !important;
+    opacity: 0.6;
+}
+.navbar.navbar-scrolled #nav-search-input {
+    color: var(--luxury-charcoal) !important;
+}
+.navbar.navbar-scrolled #nav-search-input::placeholder {
+    color: rgba(0,0,0,0.5) !important;
 }
 
 .navbar-brand {
@@ -92,6 +135,11 @@ h1, h2, h3, .navbar-brand {
     opacity: 0.95;
 }
 
+.btn-luxury-pill:active {
+    transform: translateY(-1px) scale(0.98);
+    transition: var(--transition-fast);
+}
+
 .btn-outline-luxury {
     background: transparent !important;
     color: var(--luxury-pink) !important;
@@ -127,28 +175,36 @@ h1, h2, h3, .navbar-brand {
     transform: translateY(-2px);
 }
 
-/* Hero Section */
+/* Hero Section & Swiper Slider */
 .hero-section {
     position: relative;
-    height: 80vh;
+    height: 90vh; /* Premium full-height feel */
+    width: 100vw; /* Break out of container for true edge-to-edge */
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    margin-bottom: 4rem;
+    margin-bottom: 5rem;
 }
 
-.hero-video {
+.slide-bg {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    transform: translate(-50%, -50%);
-    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    z-index: -1;
+    transform: scale(1);
+    transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.swiper-slide-active .slide-bg {
+    transform: scale(1.05); /* Subtle zoom parallax on active slide */
 }
 
 .hero-overlay {
@@ -157,66 +213,108 @@ h1, h2, h3, .navbar-brand {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
     z-index: 0;
 }
 
-.hero-content {
-    position: relative;
+.swiper-slide-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
     z-index: 1;
     text-align: center;
     color: white;
     max-width: 800px;
+    width: 100%;
+    opacity: 0;
+    transition: all 1s ease-out;
 }
 
-.hero-content h1 {
+.swiper-slide-content.active {
+    opacity: 1;
+    transform: translate(-50%, -50%); /* Fade and slide up */
+}
+
+.swiper-slide-content h1 {
     font-size: 4.5rem;
     margin-bottom: 1.5rem;
-    animation: fadeInUp 1s ease-out;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
-.hero-content p {
+.swiper-slide-content p {
     font-size: 1.5rem;
     margin-bottom: 2.5rem;
     opacity: 0.9;
-    animation: fadeInUp 1.2s ease-out;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Swiper Controls Customization */
+.swiper-pagination-bullet {
+    background: rgba(255,255,255,0.5) !important;
+    opacity: 1 !important;
+    width: 10px !important;
+    height: 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+.swiper-pagination-bullet-active {
+    background: var(--luxury-pink) !important;
+    width: 24px !important;
+    border-radius: 10px !important;
+}
+
+.swiper-button-next, .swiper-button-prev {
+    color: white !important;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.swiper-button-next:hover, .swiper-button-prev:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Ensure the search bar stays on top */
+.hero-search-wrapper {
+    z-index: 10005;
 }
 
 /* Luxury Card Styling & Uniform Alignment */
 .listing-card {
-    background: white;
-    border-radius: 24px !important;
-    overflow: hidden;
     border: none !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-lg) !important;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: var(--shadow-sm);
     transition: var(--transition-smooth);
-    margin-bottom: 2.5rem;
-    height: 100%;
+    margin-bottom: 3rem; /* Stitch: More breathing room between cards */
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .listing-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(225, 29, 72, 0.1) !important;
+    transform: translateY(-8px); /* Stitch: Floating effect */
+    box-shadow: 0 25px 50px rgba(0,0,0,0.08); /* Stitch: Softer, larger shadow */
 }
 
 .card-img-container {
-    height: 250px;
+    height: 320px; /* Stitch: Taller images for better visual impact */
     overflow: hidden;
     position: relative;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-radius: var(--radius-lg);
 }
 
 .card-img-top {
-    height: 100% !important;
     width: 100%;
-    object-fit: cover !important;
-    transition: transform 1s ease !important;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .listing-card:hover .card-img-top {
-    transform: scale(1.08);
+    transform: scale(1.06); /* Stitch: Cinematic image zoom */
 }
 
 .card-body {
@@ -302,6 +400,10 @@ h1, h2, h3, .navbar-brand {
 .btn-book-now:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); /* Blue Hover Shadow */
+}
+
+.btn-book-now:active {
+    transform: scale(0.96);
 }
 
 /* Glassmorphism Auth Pages */
@@ -560,19 +662,153 @@ select.luxury-input option {
 }
 
 /* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .hero-content h1 {
-        font-size: 2.5rem;
+/* Advanced Mobile Responsiveness (320px - 480px) */
+@media (max-width: 576px) {
+    :root {
+        --grid-unit: 6px;
     }
-    .hero-content p {
+
+    body {
+        font-size: 14px;
+    }
+
+    .container {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    /* Hero Section Adjustments */
+    .hero-section {
+        height: 100vh; /* Full screen height on mobile */
+    }
+    
+    .swiper-slide-content h1 {
+        font-size: 2.8rem;
+    }
+
+    .swiper-slide-content p {
         font-size: 1.1rem;
     }
-    .glass-card {
-        padding: 2rem;
+
+    .swiper-button-next, .swiper-button-prev {
+        display: none !important; /* Hide arrows on mobile for cleaner look */
     }
+
+
+    .hero-search {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 16px !important;
+        padding: 6px !important;
+        min-height: 56px !important;
+    }
+
+    .btn-luxury-pill {
+        padding: 0.7rem 1.5rem !important;
+        font-size: 0.8rem;
+        min-width: 100px !important;
+    }
+
+    /* Listing Cards Mobile Optimization */
+    .listing-card {
+        margin-bottom: 2.5rem;
+        border-radius: 16px !important;
+    }
+
+    .card-img-container {
+        height: 280px !important; /* Larger images on mobile */
+    }
+
+    .card-body {
+        padding: 1.25rem !important;
+    }
+
+    .card-title {
+        font-size: 1.3rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .price-large {
+        font-size: 1.5rem !important;
+    }
+
+    .btn-book-now {
+        padding: 14px !important; /* Larger touch target */
+        font-size: 0.95rem !important;
+    }
+
+    /* Navbar Mobile Refinements */
     .navbar {
-        padding: 0.8rem 1rem !important;
+        padding: 0.6rem 1rem !important;
     }
+
+    .navbar-brand {
+        font-size: 1.5rem !important;
+    }
+
+    .hamburger-icon {
+        width: 22px !important;
+        height: 14px !important;
+    }
+
+    /* Auth Pages Mobile */
+    .glass-card {
+        padding: 2.5rem 1.5rem !important;
+        margin: 15px;
+        border-radius: 24px !important;
+    }
+
+    .glass-card h2 {
+        font-size: 2rem !important;
+    }
+
+    /* Filters Mobile */
+    #filters {
+        padding: 0.5rem 1rem !important;
+        gap: 1.5rem !important;
+    }
+
+    .filter i {
+        font-size: 1.2rem !important;
+    }
+
+    .filter p {
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Tablet Refinements */
+@media (min-width: 577px) and (max-width: 991px) {
+    .hero-content h1 {
+        font-size: 3.5rem;
+    }
+    
+    .card-img-container {
+        height: 220px;
+    }
+}
+
+/* Micro-interactions & Scroll Reveal */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Pulse animation for CTA */
+@keyframes pulse-soft {
+    0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+}
+
+.pulse-cta {
+    animation: pulse-soft 2s infinite;
 }
 
 /* Loading Dots Animation */

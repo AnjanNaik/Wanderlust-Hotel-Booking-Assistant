@@ -4,16 +4,23 @@
       <i class="fa-regular fa-compass me-2"></i>Wanderlust
     </a>
 
-    <button class="navbar-toggler border-0 p-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
-      <div class="hamburger-icon d-flex flex-column justify-content-between" style="width: 25px; height: 16px;">
-        <span style="height: 2px; width: 100%; background: white; border-radius: 2px;"></span>
-        <span style="height: 2px; width: 70%; background: #ff385c; border-radius: 2px; align-self: flex-end;"></span>
-        <span style="height: 2px; width: 100%; background: white; border-radius: 2px;"></span>
-      </div>
-    </button>
+    <div class="d-flex align-items-center gap-2">
+      <!-- Mobile Search Toggle -->
+      <button class="btn d-md-none p-2 text-white border-0" type="button" id="mobileSearchToggle">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+
+      <button class="navbar-toggler border-0 p-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+        <div class="hamburger-icon d-flex flex-column justify-content-between" style="width: 25px; height: 16px;">
+          <span class="bar" style="height: 2px; width: 100%; background: white; border-radius: 2px; transition: 0.3s;"></span>
+          <span class="bar" style="height: 2px; width: 70%; background: #ff385c; border-radius: 2px; align-self: flex-end; transition: 0.3s;"></span>
+          <span class="bar" style="height: 2px; width: 100%; background: white; border-radius: 2px; transition: 0.3s;"></span>
+        </div>
+      </button>
+    </div>
 
     <!-- Smart Search Bar -->
-    <div class="navbar-search-container mx-auto d-none d-md-flex position-relative" style="max-width: 400px; width: 100%;">
+    <div class="navbar-search-container mx-auto d-none d-md-flex position-relative" id="navbarSearchContainer" style="max-width: 400px; width: 100%;">
       <div class="search-pill glass-card d-flex align-items-center w-100" style="height: 48px; border-radius: 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 0 16px;">
         <i class="fa-solid fa-magnifying-glass text-white opacity-50 me-3"></i>
         <input type="text" id="nav-search-input" class="bg-transparent border-0 text-white w-100 shadow-none" placeholder="Search destinations..." style="outline: none; font-size: 0.9rem;">
@@ -136,11 +143,59 @@
           window.location.href = `/listings?q=${encodeURIComponent(searchInput.value.trim())}`;
         }
       };
+
+      // Mobile Search Toggle Logic
+      const mobileToggle = document.getElementById("mobileSearchToggle");
+      const searchContainer = document.getElementById("navbarSearchContainer");
+      if (mobileToggle && searchContainer) {
+        mobileToggle.addEventListener("click", () => {
+          searchContainer.classList.toggle("d-none");
+          searchContainer.classList.toggle("d-flex");
+          searchContainer.classList.toggle("mobile-expanded");
+          if (searchContainer.classList.contains("mobile-expanded")) {
+            searchInput.focus();
+          }
+        });
+      }
+    }
+
+    // Scroll Logic for Navbar
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+          navbar.classList.add('navbar-scrolled');
+        } else {
+          navbar.classList.remove('navbar-scrolled');
+        }
+      });
     }
   });
 </script>
 
 <style>
+  .mobile-expanded {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-width: 100% !important;
+    padding: 10px 20px !important;
+    background: rgba(18, 18, 18, 0.95) !important;
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+  }
+  
+  .navbar-toggler[aria-expanded="true"] .hamburger-icon .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .navbar-toggler[aria-expanded="true"] .hamburger-icon .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .navbar-toggler[aria-expanded="true"] .hamburger-icon .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
   .suggestion-item:hover {
     background: rgba(255, 45, 85, 0.08) !important;
   }
