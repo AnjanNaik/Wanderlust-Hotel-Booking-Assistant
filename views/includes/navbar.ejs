@@ -144,6 +144,13 @@
         }
       };
 
+      // Enter key triggers search
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && searchInput.value.trim()) {
+          window.location.href = `/listings?q=${encodeURIComponent(searchInput.value.trim())}`;
+        }
+      });
+
       // Mobile Search Toggle Logic
       const mobileToggle = document.getElementById("mobileSearchToggle");
       const searchContainer = document.getElementById("navbarSearchContainer");

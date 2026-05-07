@@ -21,7 +21,11 @@ module.exports.index = async (req, res) => {
         queryObj.category = req.query.category;
     }
     const allListings = await Listing.find(queryObj).populate("reviews");
-    res.render("listings/index", { allListings });
+    res.render("listings/index", { 
+        allListings, 
+        searchQuery: req.query.q || null,
+        activeCategory: req.query.category || null
+    });
 };
 
 module.exports.searchSuggestions = async (req, res) => {

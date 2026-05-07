@@ -171,6 +171,30 @@
         </div>
 
 
+        <% if(searchQuery) { %>
+        <!-- Search Results Banner -->
+        <div class="search-results-banner" id="searchResultsBanner">
+            <div class="search-results-inner">
+                <div class="search-results-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="search-results-info">
+                    <h2 class="search-results-title">
+                        Results for "<span class="search-highlight"><%= searchQuery %></span>"
+                    </h2>
+                    <p class="search-results-count">
+                        <span class="count-number"><%= allListings.length %></span> 
+                        <%= allListings.length === 1 ? 'property' : 'properties' %> found
+                    </p>
+                </div>
+                <a href="/listings" class="search-clear-btn" title="Clear search">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Clear</span>
+                </a>
+            </div>
+        </div>
+        <% } %>
+
         <div class="row row-cols-xxl-4 row-cols-xl-3 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 mt-5">
             <% for(let listing of allListings){ %>
                 <% const isWishlist=currUser && currUser.wishlist && currUser.wishlist.some(w=> w.toString() === listing._id.toString()); %>
@@ -287,6 +311,13 @@
                 filtersList.addEventListener('scroll', toggleArrows);
                 window.addEventListener('resize', toggleArrows);
                 toggleArrows();
+            }
+            // Auto-scroll to search results if a search was performed
+            const searchBanner = document.getElementById('searchResultsBanner');
+            if (searchBanner) {
+                setTimeout(() => {
+                    searchBanner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 400);
             }
         </script>
     </body>
